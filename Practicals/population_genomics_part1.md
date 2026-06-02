@@ -7,7 +7,7 @@ The two practicals will be separated into:
 
 Icons are used to highlight sections of the practicals:
 
-<img src="https://raw.githubusercontent.com/University-of-Adelaide-Bx-Masters/Genomics/Practicals/images/book_black_24dp.png" alt="Book"/> Information  
+<img src="images/book_black_24dp.png" alt="Book"/> Information  
 <img src="https://raw.githubusercontent.com/University-of-Adelaide-Bx-Masters/Genomics/Practicals/images/computer_black_24dp.png" alt="Computer"/> Hands-on tasks  
 <img src="https://raw.githubusercontent.com/University-of-Adelaide-Bx-Masters/Genomics/Practicals/images/quiz_black_24dp.png" alt="Questions"/> Questions  
 
