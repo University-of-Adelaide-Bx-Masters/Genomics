@@ -16,8 +16,8 @@ Course material for Genomics module
 
 **Genome Assembly**
 
-- Practical 4 - [Part 1](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/genome_assembly_prac_1.md.html)
-- Practical 5 - [Part 2](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/genome_assembly_prac_2.md.html)
+- Practical 4 - [Part 1](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/genome_assembly_prac_1.html)
+- Practical 5 - [Part 2](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/genome_assembly_prac_2.html)
 
 
 
