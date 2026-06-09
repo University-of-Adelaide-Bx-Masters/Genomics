@@ -9,30 +9,52 @@
 * TOC
 {:toc}
 
-Today we will be looking at *de novo* assembly with more of a focus on larger, more complex genomes.  
+# **Introduction**
 
-# Get Started!
+## 1.1 *De-novo* assembly of eukaryotic genomes
 
-As with previous weeks' practicals, you will be using RStudio to interact with your VM.
+Today and in the next practical we will be looking at *de-novo* assembly of eukaryotic genomes which are generally larger and more complex than prokaryotes.  
+This will include:
+- Complicating factors in eukaryotes vs prokaryotes (ploidy, total size, repetitiveness)
+- Introduce phasing and necessity?? 
+- 
 
-While the focus of this section of the coursework is on the assembly of large complex genomes, it's not feasible for us to actually assemble a large complex genome (i.e. human genome) because, frankly, our VM's are too small and sitting around for hours waiting for an assembly to finish is boring (You can check the benchmark for the computational cost using Flye from [here](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md#-flye-benchmarks)). 
-So, we'll be assembling one of the small eukaryotic genomes, fission yeast (*Schizosaccharomyces pombe*), using Long Reads (LR) from nanopore and pacbio sequencing.   
-Even though the fission yeast genome is fairly small (~15 Mb with 3 chromosomes), but it's still more complicated than the prokaryotic organisms. It will still take ~20 minutes for the assembly to run even we just use 5x genome coverage. 
+## 1.2 Practical Overview
 
-## Dataset
+While the focus of this practical and the next is on the assembly of large complex genomes, it's not feasible for us to actually assemble a large complex genome (i.e. human genome) because frankly, our VM's are far too small.
+Assembling a human genome from an appropriate amount of long-read data takes hundreds to thousands of CPU hours and hundreds of Gb of RAM (see Flye assembly benchmarking [here](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md#-flye-benchmarks)).   
+Therefore we'll be assembling a small eukaryotic genome, fission yeast (*Schizosaccharomyces pombe*).
+Even though the fission yeast genome is fairly small (~15 Mb with 3 chromosomes), it's still more complicated than the prokaryotic organisms you've looked at so far and it will still take ~20 minutes for the assembly to run even with very low (~5x) long read coverage.
 
-Due to limitation of computating resources in our VM, we will use subsets of raw sequencing reads. The original sequencing dataset is very big, you can access it from this [link](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919). Here are some useful genome informations about fission yeast:
+What we will actually do: First estimate the size of a haploid yeast genome using illumina reads. 
+Then Denovo assemble HIFi and ONT and check quality of resulting assemblies.
+	This will highlight the challenges caused by repetitive regions + genome size in comparison with long reads. 
 
-- Reference genome: ASM294v2
-- Number of chromosomes: 3 nucleus chromosomes
-- Genome size (reference): 12,591,251 bp
-- Ploidy: Haploid
+Then, talk about trio phasing and its applicaitons. 
 
-## Tools/packages
 
-Tools/packages used in this Prac:
+## 1.3 Learning Outcomes 
 
-| Too/Package    | Version      | URL                                                        |
+- Practice bash commands learned previously
+- Practice QC for Illumina data
+- Learn how to do *de-novo* genome assembly using Flye with long reads
+- Learn how to assess your genome assembly quality using QUAST and BUSCO
+- Understand the importance of haplotype phasing and the concept of trio-sequencing for phasing haplotypes
+
+# **2. Setup**
+
+## 2.1 Software
+
+As in previous weeks, you will be using RStudio to interact with your VM.
+Let's activate the 'bioinf' environment so that we can access the software we'll need for the practical.
+
+```bash
+source activate bioinf
+```
+
+The table below lists all of the tools we will be using in this Practical and the next. 
+
+| Tool/Package    | Version      | URL                                                        |
 |----------------|--------------|------------------------------------------------------------|
 | fastQC         | v0.11.9      | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ |
 | assembly-stats | v1.0.1       | https://github.com/sanger-pathogens/assembly-stats         |
@@ -42,7 +64,11 @@ Tools/packages used in this Prac:
 | QUAST          | V5.2.0       | https://github.com/ablab/quast                             |
 | BUSCO          | v5.4.4       | https://busco.ezlab.org/                                   |
 
-## Running time estimation (based on teaching VM)
+Two of these tools, assembly-stats and genomescope, are not installed in the `bioinf` environment and will instead be run directly from scripts. Setting this up is covered in the next section. 
+
+
+The following table shows the estimated run time on our VMs for the different processes we'll be running. 
+
 
 | Step              | Tool/Package        | Estimated run time  |
 |-------------------|---------------------|---------------------|
@@ -57,43 +83,17 @@ Tools/packages used in this Prac:
 | genome assessment | QUAST               | < 5 min             |
 | genome assessment | BUSCO               | ~10-20 mins (each)  |
 
-The following table shows the estimated run time on VM for the different processes:
 
-## What you will learn in this Prac
 
-- Practice bash commands you have learned
-- Practice QC for illumina data you have learned
-- Learn how to do de novo genome assembly using Flye with long reads
-- Learn how to assess your genome assembly quality using QUAST and BUSCO
+## 2.2 Create directory structure
 
-# Let's start!
+The following is the directory structure we'll be working within today and in the next practical. 
 
-There are 4 different major steps (5 parts actually) in this Prac.  Please follow the instructions __in order__, because some commands will rely on the results from previous commands. Feel free to talk to tutors/instructors if you have a problem/question. 
-
-## Part 1. Set up and project preparation
-
-### 1.1 Prepare folder structure
-
-Planning your directory structure from the beginning makes your work easier to follow for both yourself and others. 
-
-I put initial input data into a `data` folder, and output files from different processing stages into separate folders in a `results` folder. If there are databases involved, I also create a `DB` folder. I store all scripts in a separate `scripts` folder (we won't use this folder in this Prac). I also use a numbered prefix such as `01_raw_data` to label different folders. All of these naming rules are just personal preference, and feel free to build your own project folder structure rules, and keep it consistent for your different projects in future.
-
-The following is the folder structure for this genome assembly project:
-
-```
-./prac_genome_assembly/
-├── 01_bin
-├── 02_DB
-├── 03_raw_data
-├── 04_results
-│   ├── 01_QC
-│   ├── 02_genome_survey
-│   ├── 03_genome_assembly
-│   └── 04_genome_assessment
-└── 05_scripts
+```bash
+DIRECTORY STRUCTURE HERE
 ```
 
-We can use following commands to build this folder structure:
+Create these directories using the code below. 
 
 ```bash
 cd ~/
@@ -102,16 +102,42 @@ cd prac_genome_assembly
 mkdir 01_bin 02_DB 03_raw_data 04_results 05_scripts
 cd 04_results
 mkdir 01_QC 02_genome_survey 03_genome_assembly 04_genome_assessment
+
 ```
 
-If you want to check your folder structure:
+Check your folder structure:
+
 ```bash
 cd ~/
 tree ./prac_genome_assembly
 ```
 
-### 1.2 Input data and additional tools
-We will be using raw sequencing data from different sequencing platforms in this Prac. These fastq files can be found in `~/data/prac_genome_assembly/01_raw_data` folder, and are including:
+Because `assembly-stats` and `genomescope` are not installed in the `bioinf` environment, we will run them directly from scripts. 
+The scripts are located in `~/data/prac_genome_assembly/01_bin/`, and we will put them in the `01_bin` folder of our project.
+
+```bash
+cd ~/prac_genome_assembly/01_bin
+cp ~/data/prac_genome_assembly/01_bin/* ./
+```
+
+
+## 2.3 Get data
+
+Create symlinks to the raw data needed for this practical as below. 
+The original dataset from which this data was subset can be found [here](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919).
+
+
+SYMLINKS HERE HERE HERE HERE
+
+```bash
+cd ~/prac_genome_assembly/02_DB
+cp ~/data/prac_genome_assembly/02_DB/* ./
+cd ~/prac_genome_assembly/03_raw_data
+cp ~/data/prac_genome_assembly/03_raw_data/*.fq ./
+```
+
+We will be using raw sequencing data from different sequencing platforms in this Prac. 
+These fastq files can be found in `~/data/prac_genome_assembly/01_raw_data` and are described in the table below:
 
 | File(s)                                    | Platform | Coverage | Description                                                |
 |--------------------------------------------|----------|----------|------------------------------------------------------------|
@@ -121,46 +147,27 @@ We will be using raw sequencing data from different sequencing platforms in this
 | pacbio_LR_5x.fq                            | PacBio   | ~5x      | Long reads from PacBio_SMRT Sequel                         |
 | pacbio_LR_10x.fq                           | PacBio   | ~10x     | Long reads from PacBio_SMRT Sequel                         |
 
-The original dataset can be found [here](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919).
-
 We will use the paired-end illumina short reads to do genome survey analysis (estimate the genome size), and use the other four Long Reads (LR) files to do genome assembly separately.
 
-The reference genome is also provided, and you can find it in folder `~/data/prac_genome_assembly/02_DB`.
+Due to limitation of computing resources in our VMs, we will use subsets of raw sequencing reads. 
+The original sequencing dataset is very big, you can access it from this [link](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919). Here is some useful information about the fission yeast genome:
 
-Next we can copy the corresponding input files into our corresponding project folders:
+- Reference genome: ASM294v2
+- Number of chromosomes: 3 nucleus chromosomes
+- Genome size (reference): 12,591,251 bp
+- Ploidy: Haploid
 
-```bash
-cd ~/prac_genome_assembly/02_DB
-cp ~/data/prac_genome_assembly/02_DB/* ./
-cd ~/prac_genome_assembly/03_raw_data
-cp ~/data/prac_genome_assembly/03_raw_data/*.fq ./
-```
-Because `assembly-stats` and `genomescope` are not globally installed in VM, we need to maually put them somewhere we know. You can find these two scripts in folder `~/data/prac_genome_assembly/01_bin/`, and we will put them in the `01_bin` folder of our project.
 
-```bash
-cd ~/prac_genome_assembly/01_bin
-cp ~/data/prac_genome_assembly/01_bin/* ./
-```
 
-Now all the setup work is done. Let's move to part 2.
+# **3. Genome Survey Analysis**
 
-## Part 2, QC on input data
+When we start a whole genome sequencing project for a new species, we normally need to collect some genomics information before we do the de novo genome assembly, such as we need to know how big the genome is. In the lecture, we had learned that we can use lab-based flow cytometry to estimate the genome size, and we can also use short reads (illumina reads) to do this computationally. In this part, we will learn how to estimate the genome size using short reads.
 
-In this part, we will be using `fastQC` to check the sequencing quality of illumina reads, and using `assembly-stats` to acquire some statistics about the long reads. 
 
-### 2.1 QC for illumina reads
+## 3.1 QC of Illumina reads
 
-Let's have a look at the short reads (illumina reads) using `fastQC` first
-
-Before we start the actual analysis, we need to activate the `conda` environment so that we can use packages/tools that are only installed in specific environments (It's always a good idea to check what `conda` environment you are in before you do following analyses). To activate `bioinf` environment, you can run:
-
-```bash
-source activate bioinf
-```
-
-After you `activate` this `bioinf` environment, your terminal prompt should be changed to `(bioinf) axxxxxxx@ip-xx-xxx-x-xx`, which indicates that now you are in the `bioinf` environment.
-
-Then we can run `fastqc` to check the quality of the short reads:
+The first step in any bioinformatics analysis is always quality control. 
+Let's check the quality of our short reads (illumina reads) using `fastQC`.
 
 ```bash
 cd ~/prac_genome_assembly/04_results/01_QC
@@ -168,28 +175,12 @@ fastqc ~/prac_genome_assembly/03_raw_data/illumina_SR_20x_1.fq ~/prac_genome_ass
 ```
 
 * *How many sequences are there in the dataset?*
-* *How good the illumina reads are?* 
+* *How long are the Illumina reads?*
+* *How good are the illumina reads?* 
 
-### 2.2 Long reads
-We will be using `assembly-stats` to get some statistics for the long reads.
 
-```bash
-cd ~/prac_genome_assembly/04_results/01_QC
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_5x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_5x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_10x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_10x.fq
-```
+## 3.2 Get k-mer distribution
 
-* *Which dataset has the largest average read length?*
-* *Which dataset has the longest individual read?*
-* *Assuming that our genome is approximately 15 Mb long, what coverage do these reads give us? Remember that Coverage = (total number of bases in reads)/genome size*
-* *Do you think this is sufficient to generate a good assembly? Why or why not?*
-
-## Part 3, genome survery analysis (genome size estimation)
-When we start a whole genome sequencing project for a new species, we normally need to collect some genomics information before we do the de novo genome assembly, such as we need to know how big the genome is. In the lecture, we had learned that we can use lab-based flow cytometry to estimate the genome size, and we can also use short reads (illumina reads) to do this computationally. In this part, we will learn how to estimate the genome size using short reads.
-
-### 3.1 get k-mer distribution
 The first step of genome size estimation is to get the k-mer distribution using the available short reads. We can use `jellyfish` to do this.
 
 ```bash
@@ -205,7 +196,8 @@ jellyfish histo -o illumina_SR_20x.21mer_out.histo illumina_SR_20x.21mer_out
 
 `jellyfish` will break short reads into fixed length short sequences, which we call them [k-mers](https://en.wikipedia.org/wiki/K-mer) (we use 21-mer in this project). The size of k-mers should be large enough allowing the k-mer to map uniquely to the genome (a concept used in designing primer/oligo length for PCR). However, too large k-mers leads to overuse of computational resources. `21` is normally a good start. In the `jellyfish count` command, `-C` means we count k-mers at both strands, `-s 4G` is used to control the memory usage, and `-m 21` means we will count 21-mers. After we count k-mers, we use `jellyfish histo` to get the frequency of k-mers with certain copy numbers.
 
-### 3.2 genome survey analysis using genomescope
+## 3.3 Estimate genome length 
+
 After we get the `histo` file from the `jellyfish` run, we can use that to do genome survey with `genomescope`. `genomescope` is a R script, we can run it with following command:
 
 ```bash
@@ -217,9 +209,44 @@ Rscript ~/prac_genome_assembly/01_bin/genomescope.R illumina_SR_20x.21mer_out.hi
 In the command, `21` means we are using 21-mer, `150` is the short reads length, and `illumina_SR_20x.21mer` will be the output folder. We can check the k-mer distribution by checking the file `plot.png`, which is normally located in the output folder `illumina_SR_20x.21mer`
 
 
-## Part 4, genome assembly 
+ADD INFO HERE ON INTERPRETATION OF GENOMESCOPE RESULTS
 
-### 4.1 assembly using Flye
+# **4. Investigate Long Read data**
+
+## 4.1 Inspect long read files
+
+Let's see what the long read files look like. 
+
+#========================================
+ADD MANUAL FILE INSPECTION STEP HERE FOR LONG READS
+#=======================================
+
+QUESTIONS HERE
+
+## 4.2 Long Read summary statistics
+
+Now that we know what our data looks like, we'll use the tool `assembly-stats` to get more information. 
+
+```bash
+cd ~/prac_genome_assembly/04_results/01_QC
+~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_5x.fq
+~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_5x.fq
+~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_10x.fq
+~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_10x.fq
+```
+
+From the output text, answer the following:
+
+* *Which dataset has the largest average read length?*
+* *Which dataset has the longest individual read?*
+* *Assuming that our genome is approximately 15 Mb long, what coverage do these reads give us? Remember that Coverage = (total number of bases in reads)/genome size*
+* *Do you think this is sufficient to generate a good assembly? Why or why not?*
+
+
+# **5. *De-novo* genome assembly** 
+
+## 5.1 assembly using Flye
+
 Okey! Now we can do the de novo genome assembly. There are tons of assemblers to do de novo genome assembly. Some popular ones are `canu`, `Flye`, `smartdenovo`, `wtdbg`, etc. In this prac, we will be using `Flye`.
 
 Do a test run to see if it works using the following (make sure you are under the `bioinf` conda environment):
@@ -240,7 +267,7 @@ flye --nano-raw ~/prac_genome_assembly/03_raw_data/nanopore_LR_5x.fq --out-dir n
 
 It should take ~20 minutes for the assembly to complete.   
 
-### 4.2. While we wait ...  Resources for genome assembly
+## 5.2. While we wait ...  Resources for genome assembly
 
 Larger, more complex genomes contain high percentages of repeats. Assembling these repeats accurately with short reads is not effective. Long reads that are able to span these repeat regions result in much better assemblies. There are many long read assembly tools available including the following: 
 
@@ -271,7 +298,7 @@ The authors of Flye did some benchmarks on computational resources required when
 
 You can see now why we aren't assembling a larger genome (i.e. human genome) using our VM. 
 
-### 4.3 Looking at the assembly report
+## 5.3 Looking at the assembly report
 
 Flye will generate 5 folders, which store output files from 5 stages of Flye, and some important individual files. These includes:
 
@@ -296,7 +323,7 @@ Type `G` to go to the end of the file, and you will see a brief summary about th
 
 When you are finished, exit out of the report with `q`. 
 
-### 4.4 assembly using other datasets
+### 5.4 Assembly using other datasets
 
 You can do the genome assembly for the other three LR datasets:
 
@@ -311,7 +338,7 @@ flye --pacbio-raw ~/prac_genome_assembly/03_raw_data/pacbio_LR_10x.fq --out-dir 
 
 Each of these will take 20-30 mins. I encourage you to run these jobs before the next session, and go through the reports (flye.log) to get ideas about the different assemblies, and we will look into them in more details in the next session.
 
-### 4.5 Additional information - diploid assembly
+### 5.5 Additional information - diploid assembly
 
 The fission yeast is a small haploid genome which means that it is fairly straightforward nowadays to assemble. 
 What is more challenging are larger diploid and polyploid genomes.
