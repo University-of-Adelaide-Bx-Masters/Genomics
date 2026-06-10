@@ -1,10 +1,5 @@
 # [Genomics](https://university-of-adelaide-bx-masters.github.io/Genomics/)
 
-Course material for Genomics module
-
-
-- [VM login instructions](https://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/vm_login_instructions.html)
-- [VM logout instructions](https://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/vm_logout_instructions.html)
 
 ## Practicals
 
@@ -27,7 +22,9 @@ Course material for Genomics module
 
 
 
-## Other Useful Links
+## Useful Links
 
+- [VM login instructions](https://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/vm_login_instructions.html)
+- [VM logout instructions](https://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/vm_logout_instructions.html)
 - [Overview of commonly used bioinformatics file formats](http://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/overview_of_file_types.html)
 
