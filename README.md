@@ -27,11 +27,7 @@ Course material for Genomics module
 
 
 
-## Assignment
-
-- [Genomics Assignment](http://university-of-adelaide-bx-masters.github.io/Genomics/Assignment/genomics_assignment.html)
-
 ## Other Useful Links
 
-- [Overview of file types](http://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/overview_of_file_types.html)
+- [Overview of commonly used bioinformatics file formats](http://university-of-adelaide-bx-masters.github.io/Fundamentals_of_Bioinformatics/Course_materials/overview_of_file_types.html)
 
