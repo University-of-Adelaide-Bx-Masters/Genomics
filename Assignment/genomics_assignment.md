@@ -77,7 +77,7 @@ Data for this part is located in the `/data/assignment3/` directory
 
 **Q3.1a** (2 marks)
 
-![Copy Number](../images/Q1_fig1.tumour_CN.png)
+![Copy Number](./images/Q1_fig1.tumour_CN.png)
 
 The above figure shows the copy number estimates for various genomic regions inside a hypothetical human tumour sample.
 
@@ -85,7 +85,7 @@ List all the copy number variations that you can see from the figure.
 
 **Q3.1b** (2 marks)
 
-![VAF](../images/Q1_fig2.tumour_VAF.png)
+![VAF](./images/Q1_fig2.tumour_VAF.png)
 
 Similarly, the above figure shows the variant allele frequency of variants inside another hypothetical tumour sample. 
 
@@ -105,8 +105,8 @@ The above figures are from an hypothetical "pure" tumour sample. But in practice
 
 For example, for the same tumour sample, now there is a percentage of normal cells included in the data, and the CN estimates and VAF graphs now look like this:
 
-![impure CN](../images/Q1_fig3.impure_CN.png)
-![impure VAF](../images/Q1_fig4.impure_VAF.png)
+![impure CN](./images/Q1_fig3.impure_CN.png)
+![impure VAF](./images/Q1_fig4.impure_VAF.png)
 
 Estimate tumour purity of the sample from these figures.
 
