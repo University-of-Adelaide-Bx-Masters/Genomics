@@ -7,7 +7,7 @@
 
 - Practical 1 - [Part 1: Variant Annotation](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/variant_annotation.html)
 - Practical 2 - [Part 2: Variant Filtering](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/variant_filtering.html)
-- Practical 3 - Structural Variation - COMING SOON!
+- Practical 3 - [Structural Variation](http://university-of-adelaide-bx-masters.github.io/Genomics/Practicals/structural_variation.html)
 
 **Human Population Genomics**
 
