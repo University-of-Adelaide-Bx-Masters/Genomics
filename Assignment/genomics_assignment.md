@@ -1,5 +1,6 @@
 # **Practical Assignment - Genomics**
 
+This assignment includes 90 possible marks which will be scaled to a mark out of 60.
 
 ## Section 1: Clinical Genomics - **15 marks**
 
@@ -33,83 +34,80 @@
 11. Why is validation and reproducibility so important in clinical pipelines? **[1 mark]**
 
 
-## Section 2: Population Genomics
+## Section 2: Population Genomics - **20 marks**
 
-1. What command would you use to get the total number of variants from a VCF called file.vcf.gz? And then only for the region 10,000,000-30,000,000 from chromosome 3?
+1. What command would you use to get the total number of variants from a VCF called file.vcf.gz? And then only for the region 10,000,000-30,000,000 from chromosome 3? **[2 marks]**
 
-2. What information would the command bcftools query -l file.vcf.gz give you? (Look at the bcftools documentation for a complete list of options)
+2. What information would the command bcftools query -l file.vcf.gz give you? (Look at the bcftools documentation for a complete list of options) **[1 mark]**
 
-3. If a VCF file has GT:GQ:DP:GL in the FORMAT field for a particular variant, what kind of information about the samples is recorded?
+3. If a VCF file has GT:GQ:DP:GL in the FORMAT field for a particular variant, what kind of information about the samples is recorded? **[2 marks]**
 
-4. Which of the following programs can convert a VCF file into data formats compatible with population genomics analyses?
+4. Which of the following programs can convert a VCF file into data formats compatible with population genomics analyses? **[2 marks]**
 	- a. PLINK
 	- b. ADMIXTOOLS
 	- c. CONVERTF
 	- d. SMARTPCA
 
-5. What was the extension of the three output files when you converted a VCF file using PLINK? Describe briefly what information is recorded in each file.
+5. What was the extension of the three output files when you converted a VCF file using PLINK? Describe briefly what information is recorded in each file. **[3 marks]**
 
-6. When using PLINK, what would the option --maf 0.10 do? (Look at the PLINK documentation for a complete list of options... and use the search box!)
+6. When using PLINK, what would the option --maf 0.10 do? (Look at the PLINK documentation for a complete list of options... and use the search box!) **[2 marks]**
 
-7. The three EIGENSTRAT output files generated when converting VCF files with CONVERTF contain information about the genotypes, variants, and samples. How is the genotype information coded? Briefly describe each code key (4 in total).
+7. The three EIGENSTRAT output files generated when converting VCF files with CONVERTF contain information about the genotypes, variants, and samples. How is the genotype information coded? Briefly describe each code key (4 in total). **[2 marks]**
 
-8. Data missingness is characteristic of ancient DNA datasets and could lead to biases when building a PCA. If you use SMARTPCA on a dataset that includes both contemporary (no missing data) and ancient genotypes (missing data), what options can you use to avoid biases due to missing data?
+8. Data missingness is characteristic of ancient DNA datasets and could lead to biases when building a PCA. If you use SMARTPCA on a dataset that includes both contemporary (no missing data) and ancient genotypes (missing data), what options can you use to avoid biases due to missing data? **[2 marks]**
 
-9. When using population genomics data, PCA (select the correct answer):
+9. When using population genomics data, PCA (select the correct answer): **[1 mark]**
 	- a. is a formal test of shared ancestry between populations
 	- b. should only be used as an exploratory tool to visualise genetic diversity and formulate hypotheses about population ancestry
 	- c. a and b are correct
 	- d. a and b are wrong
 
-10. F and D statistics allow us to test hypotheses about populations ancestry:
+10. F and D statistics allow us to test hypotheses about populations ancestry: **[1 mark]**
 	- a. True
 	- b. False
 
-11. You performed a F4 or a D statistic and the result is not significantly different from 0. What does it mean in terms of genetic admixture?
+11. You performed a F4 or a D statistic and the result is not significantly different from 0. What does it mean in terms of genetic admixture? **[2 marks]**
 
 
-## Section 3: Structural Variation - **? marks**
+## Section 3: Structural Variation - **20 marks**
 
 Data for this part is located in the `/data/assignment3/` directory
 
-### Section 3 Part 1: Copy number variations (10 marks)
+### Copy number variation
 
-1. The figure below shows the copy number estimates for various genomic regions inside a hypothetical human tumour sample. List all the copy number variations that you can see in the figure. **[2 marks]**
+**3.1.** The figure below shows the copy number estimates for various genomic regions inside a hypothetical human tumour sample. List all the copy number variations that you can see in the figure. **[2 marks]**
 
 ![Copy Number](./images/Q1_fig1.tumour_CN.png)
 
 
-2. Similarly, the figure below shows the variant allele frequency of variants inside another hypothetical tumour sample. List all the CNVs that you can see from this figure. **[2 marks]**
+**3.2.** Similarly, the figure below shows the variant allele frequency of variants inside another hypothetical tumour sample. List all the CNVs that you can see from this figure. **[2 marks]**
 
 ![VAF](./images/Q1_fig2.tumour_VAF.png)
 
 
-3. Interpret the figures in the previous two questions together as being from the same sample. List the CNVs that you can see by integrating both data sets. **[2 marks]**
+**3.3.** Interpret the figures in the previous two questions together as being from the same sample. List the CNVs that you can see by integrating both data sets. **[2 marks]**
 
 
-4. The figures in Questions 1 and 2 above are from an hypothetical "pure" tumour sample but in practice, we often get tumour samples which are mixed with some normal/non-tumourous cells. For example, for the same tumour sample, a percentage of normal cells have been included in the data, and the CN estimates and VAF graphs now look like the figures below. Estimate tumour purity of the sample from these figures. **[2 marks]**
+**3.4.** The figures in Questions 1 and 2 above are from an hypothetical "pure" tumour sample but in practice, we often get tumour samples which are mixed with some normal/non-tumourous cells. For example, for the same tumour sample, a percentage of normal cells have been included in the data, and the CN estimates and VAF graphs now look like the figures below. Estimate tumour purity of the sample from these figures. **[2 marks]**
 
 ![impure CN](./images/Q1_fig3.impure_CN.png)
 
 ![impure VAF](./images/Q1_fig4.impure_VAF.png)
 
 
-5. What do the grey bars in the figures above represent? Why do they not contain any data points? **[1 mark]**
+**3.5.** What do the grey bars in the figures above represent? Why do they not contain any data points? **[1 mark]**
 
-6. If we suspect that p-arm of chromosome 8 has fused with the q-arm of chromosome 17. How will you be able to determine whether a fusion event has occured? Will short-read NGS data (WGS, WES or RNA-seq) be able to detect such a fusion event? **[2 marks]** - potentiall only 1 mark...
+**3.6.** If we suspect that p-arm of chromosome 8 has fused with the q-arm of chromosome 17. How will you be able to determine whether a fusion event has occured? Will short-read NGS data (WGS, WES or RNA-seq) be able to detect such a fusion event? **[1 mark]**
 
 
-### Section 3 Part 2: Data processing - (10 marks)
+### Data processing
 
-1. Using symlinks to the data located in `~/data/assignment3/Q2`, write a BASH script to do the following: **[6 points]**
+**3.7.** Using symlinks to the data located in `~/data/assignment3/Q2` (listed below) , write a BASH script to do the following: **[6 marks]**
 
-	- a. Use `bwa` to index the `mappabale_region.fasta` file. This is your reference sequence.
+	- **a.** Use `bwa` to index the `mappabale_region.fasta` file. This is your reference sequence.
+	- **b.** Map the paired-end FASTQ set (`sample_R1.fastq.gz` and `sample_R2.fastq.gz`) to the indexed reference above. Remember the output should be in BAM format, and needs to be sorted and indexed.
+	- **c.** Use `manta` to call structural variation on this set of data.
 
-	- b. Map the paired-end FASTQ set (`sample_R1.fastq.gz` and `sample_R2.fastq.gz`) to the indexed reference above. Remember the output should be in BAM format, and needs to be sorted and indexed.
-
-(Structural variation detection, refer to Wk 9 Prac)
-
-	- c. Use `manta` to call structural variation on this set of data.
 
 The files located in `~/data/assignment3/Q2` are: 
 
@@ -125,19 +123,21 @@ Your final submission **must** include:
 * the mapped and sorted BAM file
 * the output file (`diploidSV.vcf.gz`) generated by Manta
 
-2. By either examining the read data on IGV or by interpreting manta output, do the following: **[4 marks]**
-	- a. Locate and list any breakpoints you can see in the data
-	- b. Identify all SV events and their associated breakpoints. Show the steps and reasonings for your answers. Include diagrams if you think it helps. If you want to use hand-drawn diagram, just take and submit a photo of your drawing, but make sure it's clearly legible.
 
-## Section 4: Eukaryotic genome assembly
+**3.8.** By either examining the read data on IGV or by interpreting manta output, do the following: **[4 marks]**
+	- **a.** Locate and list any breakpoints you can see in the data
+	- **b.** Identify all SV events and their associated breakpoints. Show the steps and reasonings for your answers. Include diagrams if you think it helps. If you want to use hand-drawn diagram, just take and submit a photo of your drawing, but make sure it's clearly legible.
+
+
+## Section 4: Eukaryotic genome assembly - **35 marks**
 
 In this part, you aim is to de novo assemble one of the SMALLEST eukaryotic genomes, Encephalitozoon intestinalis. E. intestinalis belongs to Microsporidia, and it's a parasite (microbial fungi), which causes microsporidiosis (an oppotunistic intestinal infection that causes diarrhea and wasting in immunocompromised individuals, such as HIV). If you want to understand more about E. intestinalis, please hava a read at [wikipedia](https://en.wikipedia.org/wiki/Encephalitozoon_intestinalis). 
 
 Although the genome of E. intestinalis is very small (~2.5 Mb), it has 11 chromsomes. If you want to know more about the genome statistics of E. intestinalis, please have a look at [here](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_024399295.1/).
 
-## Data
+### Data
 
-You are provided with 8 fastq files containing sequencing reads using different sequencing platforms. These fastq files can be found in `~/data/assignment2/raw_data` folder, and are including:
+You are provided with 8 fastq files containing sequencing reads using different sequencing platforms. These fastq files can be found in `~/data/assignment2/raw_data` folder and are described in the table below:
 
 | File(s)                                    | Platform | Coverage | Description                                            |
 |--------------------------------------------|----------|----------|--------------------------------------------------------|
@@ -157,64 +157,60 @@ You are also provided with the E. intestinalis reference (taken from [here](http
 
 It is in the `~/data/assignment2/DB` directory and is called `GCA_024399295.1_ASM2439929v1_genomic.fna`. 
 
-In addition to the sequencing files, you will be also given two scripts which will be used to do sequence/genome statistics and genome survey analysis. These two scripts can be found in folder `~/data/assignment2/bin`, and are including:
+In addition to the sequencing files, you will be also given two scripts which will be used to do sequence/genome statistics and genome survey analysis. These two scripts can be found in folder `~/data/assignment2/bin`, and are:
 
 | Script       | Description                                 | Link                                               |
 |----------------|---------------------------------------------|----------------------------------------------------|
 | assembly-stats | A light tool to do basic genome statistics  | https://github.com/sanger-pathogens/assembly-stats |
 | genomescope.R  | A R script to do genome survey analysis     | https://github.com/schatzlab/genomescope           |
 
-### Part 1, QC
 
-**1.1** Run `assembly-stats` on each LR (Long Reads) dataset and find out the following info for each dataset:
+### Questions
 
-* total number of bases *- 1 marks*
-* number of reads *- 1 marks*
-* average read length*- 1 marks*
-* largest read length*- 1 marks*
+**4.1** Run `assembly-stats` on each LR (Long Reads) dataset and find out the following info for each dataset:
 
-**1.2** Predict which datasets will produce the best and worst assemblies. 
+* total number of bases **[1 mark]**
+* number of reads **[1 mark]**
+* average read length **[1 mark]**
+* largest read length **[1 mark]**
+
+**4.2** Predict which datasets will produce the best and worst assemblies. 
 Don't worry if your predictions don't match up with your results later. 
-Just try to justify your predictions based on the information you've collected and your current knowledge. *- 2 marks*
+Just try to justify your predictions based on the information you've collected and your current knowledge. **[2 marks]**
 
-### Part 2
+**4.3** Use `jellyfish` and `genomescope.R` to perform genome survey analysis. What is the estimated genome size? Provide the generated figure showing the fitted model for k-mer distribution (Hint: plot.png in your genomescope output folder). **[4 marks]**
 
-**2.1** Use `jellyfish` and `genomescope.R` to perform genome survey analysis. What is the estimated genome size? Provide the generated figure showing the fitted model for k-mer distribution (Hint: plot.png in your genomescope output folder). *- 4 marks*
 
-### Part 3
+**4.4** Write a bash script to assemble all 6 LR datasets using Flye. [Hint: Assembly all 6 LR datasets will take ~50 mins in total, so be patient if you see the Flye is running for a while.] **[5 marks]**
 
-**3.1** Write a bash script to assemble all 6 LR datasets using Flye. [Hint: Assembly all 6 LR datasets will take ~50 mins in total, so be patient if you see the Flye is running for a while.] *- 6 marks*
+**4.5** Run `assembly-stats` on each assembled genome and find out the following info for the assembled genomes:
 
-**3.2** Run `assembly-stats` on each assembled genome and find out the following info for the assembled genomes:
+* draft genome size **[1 mark]**
+* number of contigs **[1 mark]**
+* largest contig length **[1 mark]**
+* N50 **[1 mark]**
 
-* draft genome size *- 1 marks*
-* number of contigs *- 1 marks*
-* largest contig length*- 1 marks*
-* N50 *- 1 marks*
+**4.6** Compare these assemblies with each other using QUAST and provide the report (Hint: report.pdf in your QUAST output folder). **[2 marks]**
 
-### Part 4
+**4.7** Comment on the contig length distribution. Is this what you expected? **[2 marks]**
 
-**4.1** Compare these assemblies with each other using QUAST and provide the report (Hint: report.pdf in your QUAST output folder). *- 2 marks*
+**4.8** Explain why contiguity isn't a good measure of assembly accuracy but is still relevant to the overall assessment of assembly quality. **[2 marks]**
 
-**4.2** Comment on the contig length distribution. Is this what you expected? *- 2 marks*
 
-**4.3** Explain why contiguity isn't a good measure of assembly accuracy but is still relevant to the overall assessment of assembly quality. *- 2 marks*
+**4.9** Run BUSCO on your 6 assemblies using an appropriate lineage and create a comparison image using the `generate_plot.py` script. Note that this script will only work when the `BUSCO` conda environment is activated. Provide this image [Hint: the "busco_figure.png" file in short summaries folder]. **[4 marks]**
 
-### Part 5
+**4.10** Comment on the BUSCO results. Which assembly appears to be the best and which is the worst? **[2 marks]**
 
-**5.1** Run BUSCO on your 6 assemblies using an appropriate lineage and create a comparison image using the `generate_plot.py` script. Note that this script will only work when the `BUSCO` conda environment is activated. Provide this image [Hint: the "busco_figure.png" file in short summaries folder]. *- 4 marks*
 
-**5.2** Comment on the BUSCO results. Which assembly appears to be the best and which is the worst? *- 2 marks*
+**4.11** Considering your findings so far, justify which assembly you think is the best and which is the worst.
+If your findings don't match your predictions from Part 1, try to explain why this might be. **[4 marks]**
 
-### Part 6
+### Section 4 check-list for submission
 
-**6.1** Considering your findings so far, justify which assembly you think is the best and which is the worst.
-If your findings don't match your predictions from Part 1, try to explain why this might be. *- 4 marks*
-
-## Check-list for your assignment2 submission
+To obtain full marks for Section 4, make sure to include the following:
 
 * A document including answers to all questions
-* A image/figure showing the k-mer distribution model fitting on genome survey analysis in Part 2.1
-* A bash script to assemble all 6 LR datasets using Flye in Part 3.1
-* A report from the QUAST assessment in Part 4.1
-* A comparison figure showing the BUSCO scores for all 6 draft assemblies in Part 5.1.
+* A image/figure showing the k-mer distribution model fitting on genome survey analysis in Question 4.3.
+* A bash script to assemble all 6 LR datasets using Flye in Question 4.4.
+* A report from the QUAST assessment from Question 4.6
+* A comparison figure showing the BUSCO scores for all 6 draft assemblies in Question 4.9.
