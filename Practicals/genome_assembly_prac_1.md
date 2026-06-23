@@ -14,10 +14,7 @@
 ## 1.1 *De-novo* assembly of eukaryotic genomes
 
 Today and in the next practical we will be looking at *de-novo* assembly of eukaryotic genomes which are generally larger and more complex than prokaryotes.  
-This will include:
-- Complicating factors in eukaryotes vs prokaryotes (ploidy, total size, repetitiveness)
-- Introduce phasing and necessity?? 
-- 
+The human genome falls into this category as it is a large diploid (~3.1Gbp haplotype), comprised of ~50% repetitive elements. 
 
 ## 1.2 Practical Overview
 
@@ -28,9 +25,7 @@ Even though the fission yeast genome is fairly small (~15 Mb with 3 chromosomes)
 
 What we will actually do: First estimate the size of a haploid yeast genome using illumina reads. 
 Then Denovo assemble HIFi and ONT and check quality of resulting assemblies.
-	This will highlight the challenges caused by repetitive regions + genome size in comparison with long reads. 
-
-Then, talk about trio phasing and its applicaitons. 
+This will highlight the challenges caused by repetitive regions + genome size in comparison with long reads. 
 
 
 ## 1.3 Learning Outcomes 
@@ -89,9 +84,6 @@ The following table shows the estimated run time on our VMs for the different pr
 
 The following is the directory structure we'll be working within today and in the next practical. 
 
-```bash
-DIRECTORY STRUCTURE HERE
-```
 
 Create these directories using the code below. 
 
@@ -126,8 +118,6 @@ cp ~/data/prac_genome_assembly/01_bin/* ./
 Create symlinks to the raw data needed for this practical as below. 
 The original dataset from which this data was subset can be found [here](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919).
 
-
-SYMLINKS HERE HERE HERE HERE
 
 ```bash
 cd ~/prac_genome_assembly/02_DB
@@ -209,23 +199,9 @@ Rscript ~/prac_genome_assembly/01_bin/genomescope.R illumina_SR_20x.21mer_out.hi
 In the command, `21` means we are using 21-mer, `150` is the short reads length, and `illumina_SR_20x.21mer` will be the output folder. We can check the k-mer distribution by checking the file `plot.png`, which is normally located in the output folder `illumina_SR_20x.21mer`
 
 
-ADD INFO HERE ON INTERPRETATION OF GENOMESCOPE RESULTS
+# **4. Long Read summary statistics**
 
-# **4. Investigate Long Read data**
-
-## 4.1 Inspect long read files
-
-Let's see what the long read files look like. 
-
-#========================================
-ADD MANUAL FILE INSPECTION STEP HERE FOR LONG READS
-#=======================================
-
-QUESTIONS HERE
-
-## 4.2 Long Read summary statistics
-
-Now that we know what our data looks like, we'll use the tool `assembly-stats` to get more information. 
+Let's use the tool `assembly-stats` to get more information about our long reads. 
 
 ```bash
 cd ~/prac_genome_assembly/04_results/01_QC

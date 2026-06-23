@@ -8,7 +8,6 @@
 
 This practical will continue on from the first session of Practical genome assembly. 
 
-## Part 5, Assembly quality assessment
 
 In the first session of this practical we assembled the fission yeast (*Schizosaccharomyces pombe*) genome using different input datasets. If you finished the genome assembly using four datasets respectively, you should have four draft genome assemblies:
 
@@ -20,7 +19,7 @@ In the first session of this practical we assembled the fission yeast (*Schizosa
 Today we will look at measuring *de novo* assembly quality with a focus on reference free quality metrics. 
 In particular we will look at contig length distributions and BUSCO. 
 
-### 5.1. Setting up
+# **1. Setting Up**
 
 If you finished genome assembly using all four datasets, you should get all four above-mentioned `*.assembly.fasta` files in corresponding Flye output folder in `~/prac_genome_assembly/04_results/03_genome_assembly`. You can use following commands to put them together in the same folder:
 
@@ -48,7 +47,7 @@ cp ~/data/prac_genome_assembly/04_results/03_genome_assembly/genomes/pacbio_LR_1
 
 We will assess the quality of these four assembled genomes using QUAST and BUSCO, and hope after that, we can decide which one is the **best** assembled genome.
 
-### 5.2 QUAST
+# **2. QUAST**
 
 **Important**: Before you run `quast`, remember to check your conda environment, if you are not in `bioinf` environment, run:
 
@@ -139,7 +138,7 @@ Have a good look through the new information and try to understand it.
 
 * *When interpreting the [misassemblies](https://quast.sourceforge.net/docs/manual.html#sec3.1.2) and mismatches sections in the QUAST report, what do you think we might need to keep in mind?*
 
-### 5.3 BUSCO (Benchmarking Universal Single Copy Orthologs)
+# **3. BUSCO (Benchmarking Universal Single Copy Orthologs)**
 
 **Important**: BUSCO is installed in `busco` conda environment in VM. You need to activate this environment before we run the BUSCO commands. If you just finished `quast`, you should be in `bioinf` environment, you can run following commands to switch to `busco` conda environment:
 
@@ -273,7 +272,7 @@ Navigate to it and open the png.
 
 * *Based on the BUSCO results, and excluding the reference assembly, which assembly do you think looks the best?*
 
-### 5.4. A quick example showing the application of the assembled genome: variant calling
+# **5. Application - Variant Calling**
 
 With the denovo assembled genome, there are a few different genomics analysis that we can do, such as identifing genes/proteins that of our interests, comparing with another genome, or detecting variants between our assembled genome and other individuals of the same species (such as different strains of S. pombe). Next we will use above assembled genome to detect variants based on sequencing from two other strains of *S. pombe*.
 
