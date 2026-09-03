@@ -33,8 +33,8 @@ Icons are used to highlight sections of the practicals:
 
 <img src="images/computer_black_24dp.png" alt="Computer"/> Create working directories:
 ```bash
-mkdir -p ~/Project_12_1/{data,scripts,results}
-cd ~/Project_12_1/
+mkdir -p ~/popGen_day1/{data,scripts,results}
+cd ~/popGen_day1/
 ```
 
 <img src="images/computer_black_24dp.png" alt="Computer"/> Download compressed VCF file and its index from the 1kGP public FTP site (VCF file size: 214453750 bytes):
@@ -54,7 +54,7 @@ wget -O data/1kGP_chr22.vcf.gz.tbi 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/r
 <img src="images/computer_black_24dp.png" alt="Computer"/>  Activate the `popgen` environment and copy R scripts:
 ```bash
 source activate popgen
-cp ~/data/ancient/prac_1/* ~/Project_12_1/scripts/
+cp ~/data/ancient/prac_1/* ~/popGen_day1/scripts/
 ```
 
 #### VCF meta-information and header lines
@@ -88,7 +88,7 @@ wget --directory-prefix data 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/release
 
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/> *Questions*<br>
-Q1. Determine how many variant sites are recorded in the VCF file. You can use `bcftools stats`, or `bcftools view` and bash commands.<br>
+**Q1.** Determine how many variant sites are recorded in the VCF file. You can use `bcftools stats`, or `bcftools view` and bash commands.<br>
 <details>
   <summary>Answer</summary>
   1,103,547 variants<br>
@@ -96,7 +96,7 @@ Q1. Determine how many variant sites are recorded in the VCF file. You can use `
   <code>bcftools view -H data/1kGP_chr22.vcf.gz | wc -l</code><br>
 </details>
 
-Q2. Determine how many samples are recorded in the VCF file. You can use `bcftools stats`, or `bcftools query` and bash commands.<br>
+**Q2.** Determine how many samples are recorded in the VCF file. You can use `bcftools stats`, or `bcftools query` and bash commands.<br>
 <details>
   <summary>Answer</summary>
   2,504 samples<br>
@@ -104,28 +104,28 @@ Q2. Determine how many samples are recorded in the VCF file. You can use `bcftoo
   <code>bcftools query -l data/1kGP_chr22.vcf.gz | wc -l</code><br>
 </details>
 
-Q3. The `INFO` fields contain a lot of information. In particular for the first variant position in the file: determine how many samples have data, how many ALT alleles are reported,  what the frequency of the ALT allele is globally, and what the frequency of the ALT allele is in South Asians.<br>
+**Q3.** The `INFO` fields contain a lot of information. In particular for the first variant position in the file: determine how many samples have data, how many ALT alleles are reported,  what the frequency of the ALT allele is globally, and what the frequency of the ALT allele is in South Asians.<br>
 <details>
   <summary>Answer</summary>
   AC=1, AF=0.000199681, SAS_AF=0.001<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz | head -n1 | awk '{print $1,$2,$8;}'</code><br>
 </details>
 
-Q4. Same as question 3 for variant position 16051249 (see the [BCFtools manual](http://samtools.github.io/bcftools/bcftools.html) for region or target formatting).<br>
+**Q4.** Same as question 3 for variant position 16051249 (see the [BCFtools manual](http://samtools.github.io/bcftools/bcftools.html) for region or target formatting).<br>
 <details>
   <summary>Answer</summary>
    AC=563, AF=0.11242, SAS_AF=0.2791<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16051249 | awk '{print $1,$2,$8;}'</code><br>
 </details>
 
-Q5. How many alternative alleles are observed at position 16050654?<br>
+**Q5.** How many alternative alleles are observed at position 16050654?<br>
 <details>
   <summary>Answer</summary>
   AC=9,87,599,20 so 4 alleles<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16050654 | awk '{print $1,$2,$8;}'</code><br>
 </details>
 
-Q6. Looking at the information contained in the `FORMAT` field in the body of the VCF file, what kind of data is stored in the VCF file for each sample?<br>
+**Q6.** Looking at the information contained in the `FORMAT` field in the body of the VCF file, what kind of data is stored in the VCF file for each sample?<br>
 <details>
   <summary>Answer</summary>
   GT, i.e. genotype<br>
@@ -144,7 +144,7 @@ It is a tabulated file, with 4 columns corresponding to individual IDs, populati
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q7. Using bash commands on the panel file you just downloaded, determine how many different populations and super-populations are represented in the 1kGP dataset.<br>
+**Q7.** Using bash commands on the panel file you just downloaded, determine how many different populations and super-populations are represented in the 1kGP dataset.<br>
 <details>
   <summary>Answer</summary>
   26 populations and 5 super-populations<br>
@@ -152,7 +152,7 @@ Q7. Using bash commands on the panel file you just downloaded, determine how man
   <code>tail -n+2 data/integrated_call_samples_v3.20130502.ALL.panel | awk '{print $3;}' | sort | uniq | wc -l</code><br>
 </details>
 
-Q8. How many individuals are in each super-population?<br>
+**Q8.** How many individuals are in each super-population?<br>
 <details>
   <summary>Answer</summary>
   661 AFR, 347 AMR, 504 EAS, 503 EUR, 489 SAS<br>
@@ -184,17 +184,18 @@ Q8. How many individuals are in each super-population?<br>
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q9. What are the `REF` and `ALT` alleles?<br>
+**Q9.** What are the `REF` and `ALT` alleles?<br>
 <details>
   <summary>Answer</summary>
-  REF = T and ALT = A,C
+  REF = T and ALT = A,C<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16061250 | awk '{print $1,$2,$4,$5}'</code><br>
 </details>
 
-Q10. Given `REF` and `ALT` alleles found when answering question 9, and knowing that the genotypes are phased, what are all the possible genotypes?<br>
+**Q10.** Given `REF` and `ALT` alleles found when answering question 9, and knowing that the genotypes are phased, what are all the possible genotypes?<br>
 <details>
   <summary>Answer</summary>
   0|0, 0|1, 1|0, 1|1, 0|2, 2|0, 1|2, 2|1, 2|2<br>
+  T|T, T|A, A|T, A|A, T|C, C|T, A|C, C|A, C|C<br>
 </details>
 
 ---
@@ -236,20 +237,20 @@ plink \
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q11. How many files have been generated, and what are their extensions?<br>
+**Q11.** How many files have been generated, and what are their extensions?<br>
 <details>
   <summary>Answer</summary>
   4 files with extensions <code>.bed</code>, <code>.bim</code>, <code>.fam</code>, <code>.log</code><br>
 </details>
 
-Q12. How many variants are stored in the variant file? How does it compare with the number of variants in the VCF file?<br>
+**Q12.** How many variants are stored in the variant file? How does it compare with the number of variants in the VCF file?<br>
 <details>
   <summary>Answer</summary>
   1,103,547 variants (same number of variants as in VCF file)<br>
   <code>wc -l results/plink_temp.bim</code><br>
 </details>
 
-Q13. If you look at the content of the `PLINK` variant file, you will notice that some variants are not bi-allelic SNPs. Provide an example of at most 2 other types of variations (tell what variations you observe and report the whole line for each example).<br>
+**Q13.** If you look at the content of the `PLINK` variant file, you will notice that some variants are not bi-allelic SNPs. Provide an example of at most 2 other types of variations (tell what variations you observe and report the whole line for each example).<br>
 <details>
   <summary>Answer</summary>
   Multi allelic variation (CNV):<br>
@@ -258,7 +259,7 @@ Q13. If you look at the content of the `PLINK` variant file, you will notice tha
   <code>22      rs587747231     0       16050739        T       TA</code><br>
 </details>
 
-Q14. Is the information stored in the panel file (`integrated_call_samples_v3.20130502.ALL.panel`) downloaded from the 1kGP FTP site reported in the `PLINK` sample file? *Hint: look at the `.fam` file*<br>
+**Q14.** Is the information stored in the panel file (`integrated_call_samples_v3.20130502.ALL.panel`) downloaded from the 1kGP FTP site reported in the `PLINK` sample file? *Hint: look at the `.fam` file*<br>
 <details>
   <summary>Answer</summary>
   No<br>
@@ -333,13 +334,13 @@ plink \
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q15. Does the `.fam` file contain updated information? What fields have been updated when compared to `plink_temp.fam`?<br>
+**Q15.** Does the `.fam` file contain updated information? What fields have been updated when compared to `plink_temp.fam`?<br>
 <details>
   <summary>Answer</summary>
   Yes, fields 1 and 5<br>
 </details>
 
-Q16. How many variants are stored in the `.bim` file? How does it compare with the number of variants in `plink_temp.bim`?<br>
+**Q16.** How many variants are stored in the `.bim` file? How does it compare with the number of variants in `plink_temp.bim`?<br>
 <details>
   <summary>Answer</summary>
   73,246 variants<br>
@@ -365,7 +366,7 @@ plink \
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q17. How many variants in the `.prune.in` and `.prune.out` output files?<br>
+**Q17.** How many variants in the `.prune.in` and `.prune.out` output files?<br>
 <details>
   <summary>Answer</summary>
   12,142 variants in <code>.prune.in</code> and 61,104 variants in <code>.prune.out</code><br>
@@ -373,7 +374,7 @@ Q17. How many variants in the `.prune.in` and `.prune.out` output files?<br>
   <code>wc -l results/ld_snps.prune.out</code><br>
 </details>
 
-Q18. How does it compare to the number of variants in `1kGP_chr22.bim`?<br>
+**Q18.** How does it compare to the number of variants in `1kGP_chr22.bim`?<br>
 <details>
   <summary>Answer</summary>
   The sum of the number of variants in <code>.prune.in</code> and <code>.prune.out</code> is the total number of variants in <code>1kGP_chr22.bim</code><br>
@@ -396,13 +397,13 @@ plink \
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q19. In terms of file size, what do you notice when you look at the `.bed`, `.bim` and `.fam` files before and after LD pruning?<br>
+**Q19.** In terms of file size, what do you notice when you look at the `.bed`, `.bim` and `.fam` files before and after LD pruning?<br>
 <details>
   <summary>Answer</summary>
   Smaller <code>.bed</code> and <code>.bim</code> after LD pruning, no change for <code>.fam</code><br>
 </details>
 
-Q20. How do you explain the changes, or lack thereof?<br>
+**Q20.** How do you explain the changes, or lack thereof?<br>
 <details>
   <summary>Answer</summary>
   Some variants have been pruned but all samples are kept<br>
@@ -438,13 +439,13 @@ Rscript scripts/plot_plink_pca.R
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q21. Do you observe any obvious differences between the two PCA plots?<br>
+**Q21.** Do you observe any obvious differences between the two PCA plots?<br>
 <details>
   <summary>Answer</summary>
   Clusters seem more diffused with the non-LD-pruned data<br>
 </details>
 
-Q22. What patterns do you observe?<br>
+**Q22.** What patterns do you observe?<br>
 <details>
   <summary>Answer</summary>
   Relatively obvious clustering by super-populations, AMR seem admixed between EUR, AFR and EAS<br>
@@ -547,7 +548,7 @@ Rscript scripts/plot_smartpca.R
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/>*Questions*<br>
 
-Q23. Are the `SMARTPCA` results fundamentally different from `PLINK` PCA results?<br>
+**Q23.** Are the `SMARTPCA` results fundamentally different from `PLINK` PCA results?<br>
 <details>
   <summary>Answer</summary>
   No<br>
