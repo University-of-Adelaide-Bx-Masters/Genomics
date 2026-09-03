@@ -53,7 +53,7 @@ wget -O data/1kGP_chr22.vcf.gz.tbi 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/r
 
 <img src="images/computer_black_24dp.png" alt="Computer"/>  Activate the `popgen` environment and copy R scripts:
 ```bash
-conda activate popgen
+source activate popgen
 cp ~/data/ancient/prac_1/* ~/popGen_day1/scripts/
 ```
 
