@@ -94,7 +94,7 @@ wget --directory-prefix data 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/release
   1,103,547 variants<br>
   <code>bcftools stats data/1kGP_chr22.vcf.gz | less</code><br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz | wc -l</code><br>
-</details>
+</details><br>
 
 **Q2.** Determine how many samples are recorded in the VCF file. You can use `bcftools stats`, or `bcftools query` and bash commands.<br>
 <details>
@@ -102,28 +102,28 @@ wget --directory-prefix data 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/release
   2,504 samples<br>
   <code>bcftools stats data/1kGP_chr22.vcf.gz | less</code><br>
   <code>bcftools query -l data/1kGP_chr22.vcf.gz | wc -l</code><br>
-</details>
+</details><br>
 
 **Q3.** The `INFO` fields contain a lot of information. In particular for the first variant position in the file: determine how many samples have data, how many ALT alleles are reported,  what the frequency of the ALT allele is globally, and what the frequency of the ALT allele is in South Asians.<br>
 <details>
   <summary>Answer</summary>
   AC=1, AF=0.000199681, SAS_AF=0.001<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz | head -n1 | awk '{print $1,$2,$8;}'</code><br>
-</details>
+</details><br>
 
 **Q4.** Same as question 3 for variant position 16051249 (see the [BCFtools manual](http://samtools.github.io/bcftools/bcftools.html) for region or target formatting).<br>
 <details>
   <summary>Answer</summary>
    AC=563, AF=0.11242, SAS_AF=0.2791<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16051249 | awk '{print $1,$2,$8;}'</code><br>
-</details>
+</details><br>
 
 **Q5.** How many alternative alleles are observed at position 16050654?<br>
 <details>
   <summary>Answer</summary>
   AC=9,87,599,20 so 4 alleles<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16050654 | awk '{print $1,$2,$8;}'</code><br>
-</details>
+</details><br>
 
 **Q6.** Looking at the information contained in the `FORMAT` field in the body of the VCF file, what kind of data is stored in the VCF file for each sample?<br>
 <details>
@@ -150,7 +150,7 @@ It is a tabulated file, with 4 columns corresponding to individual IDs, populati
   26 populations and 5 super-populations<br>
   <code>tail -n+2 data/integrated_call_samples_v3.20130502.ALL.panel | awk '{print $2;}' | sort | uniq | wc -l</code><br>
   <code>tail -n+2 data/integrated_call_samples_v3.20130502.ALL.panel | awk '{print $3;}' | sort | uniq | wc -l</code><br>
-</details>
+</details><br>
 
 **Q8.** How many individuals are in each super-population?<br>
 <details>
@@ -189,7 +189,7 @@ It is a tabulated file, with 4 columns corresponding to individual IDs, populati
   <summary>Answer</summary>
   REF = T and ALT = A,C<br>
   <code>bcftools view -H data/1kGP_chr22.vcf.gz 22:16061250 | awk '{print $1,$2,$4,$5}'</code><br>
-</details>
+</details><br>
 
 **Q10.** Given `REF` and `ALT` alleles found when answering question 9, and knowing that the genotypes are phased, what are all the possible genotypes?<br>
 <details>
@@ -241,14 +241,14 @@ plink \
 <details>
   <summary>Answer</summary>
   4 files with extensions <code>.bed</code>, <code>.bim</code>, <code>.fam</code>, <code>.log</code><br>
-</details>
+</details><br>
 
 **Q12.** How many variants are stored in the variant file? How does it compare with the number of variants in the VCF file?<br>
 <details>
   <summary>Answer</summary>
   1,103,547 variants (same number of variants as in VCF file)<br>
   <code>wc -l results/plink_temp.bim</code><br>
-</details>
+</details><br>
 
 **Q13.** If you look at the content of the `PLINK` variant file, you will notice that some variants are not bi-allelic SNPs. Provide an example of at most 2 other types of variations (tell what variations you observe and report the whole line for each example).<br>
 <details>
@@ -257,7 +257,7 @@ plink \
   <code>22      esv3647175;esv3647176;esv3647177;esv3647178     0       16050654        CN3   A</code><br>
   Indel:<br>
   <code>22      rs587747231     0       16050739        T       TA</code><br>
-</details>
+</details><br>
 
 **Q14.** Is the information stored in the panel file (`integrated_call_samples_v3.20130502.ALL.panel`) downloaded from the 1kGP FTP site reported in the `PLINK` sample file? *Hint: look at the `.fam` file*<br>
 <details>
@@ -338,7 +338,7 @@ plink \
 <details>
   <summary>Answer</summary>
   Yes, fields 1 and 5<br>
-</details>
+</details><br>
 
 **Q16.** How many variants are stored in the `.bim` file? How does it compare with the number of variants in `plink_temp.bim`?<br>
 <details>
@@ -372,7 +372,7 @@ plink \
   12,142 variants in <code>.prune.in</code> and 61,104 variants in <code>.prune.out</code><br>
   <code>wc -l results/ld_snps.prune.in</code><br>
   <code>wc -l results/ld_snps.prune.out</code><br>
-</details>
+</details><br>
 
 **Q18.** How does it compare to the number of variants in `1kGP_chr22.bim`?<br>
 <details>
@@ -401,7 +401,7 @@ plink \
 <details>
   <summary>Answer</summary>
   Smaller <code>.bed</code> and <code>.bim</code> after LD pruning, no change for <code>.fam</code><br>
-</details>
+</details><br>
 
 **Q20.** How do you explain the changes, or lack thereof?<br>
 <details>
