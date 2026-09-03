@@ -30,7 +30,7 @@ Icons are used to highlight sections of the practicals:
 
 <img src="images/computer_black_24dp.png" alt="Computer"/>  Activate the `popgen` environment:
 ```bash
-source activate popgen
+conda activate popgen
 ```
 
 <img src="images/book_black_24dp.png" alt="Book"/> I provided 2 datasets in `EIGENSTRAT` format. As a reminder, the `EIGENSTRAT` format consists of 3 files:
@@ -52,9 +52,9 @@ source activate popgen
 
 <img src="images/computer_black_24dp.png" alt="Computer"/> Copy `R` scripts and unarchive the practical data (stored in `~/data/genomics/ancient/`) in your working directory.
 ```bash
-mkdir -p ~/Project_12_2/{data,results,scripts}
-cd ~/Project_12_2/
-cp ~/data/ancient/prac_2/*.R ~/Project_12_2/scripts/
+mkdir -p ~/popGen_prac2/{data,results,scripts}
+cd ~/popGen_prac2/
+cp ~/data/ancient/prac_2/*.R ~/popGen_prac2/scripts/
 tar xvzf ~/data/ancient/tutorial_popgen.tar.gz -C data/
 ll data/
 ```
@@ -65,21 +65,21 @@ ll data/
 
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/> *Questions*<br>
-Q1. How many individuals are in the `AllAmerica_Ancient.eigenstrat.ind` dataset?<br>
+**Q1.** How many individuals are in the `AllAmerica_Ancient.eigenstrat.ind` dataset?<br>
 <details>
   <summary>Answer</summary>
   213<br>
   <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br>
 </details>
 
-Q2. Is there missing data in the ancient dataset `AllAmerica_Ancient.eigenstrat.geno`?<br>
+**Q2.** Is there missing data in the ancient dataset `AllAmerica_Ancient.eigenstrat.geno`?<br>
 <details>
   <summary>Answer</summary>
   yes, there is a lot of 9<br>
   <code>grep -c "9" data/AllAmerica_Ancient.eigenstrat.geno</code><br>
 </details>
 
-Q3. How many SNPs in each dataset? *Hint: look at the `.snp` files*<br>
+**Q3.** How many SNPs in each dataset? *Hint: look at the `.snp` files*<br>
 <details>
   <summary>Answer</summary>
   1,196,673 SNPs in each dataset<br>
@@ -119,19 +119,19 @@ Rscript scripts/plot_smartpca.R
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/> *Questions*<br>
 
-Q4. The scree plot represents the value for each eigenvector, i.e. the variance in the data explained by the eigenvector. In your opinion, does the first eigenvector explain much variance compared to other vectors?<br>
+**Q4.** The scree plot represents the value for each eigenvector, i.e. the variance in the data explained by the eigenvector. In your opinion, does the first eigenvector explain much variance compared to other vectors?<br>
 <details>
   <summary>Answer</summary>
   No<br>
 </details>
 
-Q5. PC1 seems to capture the variation observed between eskimos and modern Peruvian (PEL), while PC2 seems to capture the variation just within PEL. Knowing that PEL is individuals from Lima, the capital city of Peru, why would the PEL population be so diverse?<br>
+**Q5.** PC1 seems to capture the variation observed between eskimos and modern Peruvian (PEL), while PC2 seems to capture the variation just within PEL. Knowing that PEL is individuals from Lima, the capital city of Peru, why would the PEL population be so diverse?<br>
 <details>
   <summary>Answer</summary>
  Mixed ancestry between Indigenous South Americans and Europeans (colonial history), Africans (slave trade), and East Asians (20th century migrations)<br>
 </details>
 
-Q6. Where do the ancient samples cluster in regards to the PCA coordinates? And where in regards to contemporary populations?<br>
+**Q6.** Where do the ancient samples cluster in regards to the PCA coordinates? And where in regards to contemporary populations?<br>
 <details>
   <summary>Answer</summary>
   Around 0-0, on top of contemporary populations<br>
@@ -149,7 +149,7 @@ Q6. Where do the ancient samples cluster in regards to the PCA coordinates? And 
 <img src="images/computer_black_24dp.png" alt="Computer"/> In the `R` console (not the terminal!), set the working directory and run *F*3 statistics on a subset of populations using the script `scripts/run_F3.R`. Stop where it says to stop...
 
 ```R
-setwd("~/Project_12_2/")
+setwd("~/popGen_prac2/")
 file.edit("scripts/run_F3.R")
 #run the script line by line in the console
 ```
@@ -166,7 +166,7 @@ file.edit("scripts/run_F3.R")
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/> *Questions*<br>
 
-Q7. What two populations/individuals seem to diverge earlier than the others?<br>
+**Q7.** What two populations/individuals seem to diverge earlier than the others?<br>
 <details>
   <summary>Answer</summary>
   Peru_Lauricocha_5800BP and Chile_LosRieles_10900BP<br>
@@ -194,13 +194,13 @@ Q7. What two populations/individuals seem to diverge earlier than the others?<br
 ---
 <img src="images/quiz_black_24dp.png" alt="Questions"/> *Questions*<br>
 
-Q8. Is there any test population/individual for which *D* is not different from 0? What does it mean in terms of admixture?<br>
+**Q8.** Is there any test population/individual for which *D* is not different from 0? What does it mean in terms of admixture?<br>
 <details>
   <summary>Answer</summary>
   Yes, the Eskimo population. Anzick-1 did not contribute ancestry to the Eskimos<br>
 </details>
   
-Q9. Is there any test population/individual for which *D* is different from 0? Any particular pattern to report?<br>
+**Q9.** Is there any test population/individual for which *D* is different from 0? Any particular pattern to report?<br>
 <details>
   <summary>Answer</summary>
   Yes, all ancient and contemporary South Americans. There seems to be variable amount of Anzick-1 ancestry<br>
@@ -210,4 +210,8 @@ Q9. Is there any test population/individual for which *D* is different from 0? A
 
 <img src="images/book_black_24dp.png" alt="Book"/> To estimate the minimum number of streams of ancestry contributing to Central and South American populations, we have used in our study the software `qpWave` (also implemented in `admixr`). `qpWave` assesses whether *F*4-statistics of the form *F*4(A = South American 1, B = South American 2; X = outgroup 1, Y = outgroup 2) form a matrix that is consistent with different ranks: rank 0 is consistent with a single stream of ancestry relative to the outgroups, rank 1 means 2 streams of ancestry, etc. This is how we could identify at least 3 streams of ancestry: one related to Anzick-1, 2 others related to other North American populations and never reported before.
 
+<img src="images/computer_black_24dp.png" alt="Computer"/>  Deactivate the `popgen` environment:
+```bash
+conda deactivate
+```
 
