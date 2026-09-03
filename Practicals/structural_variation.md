@@ -13,15 +13,15 @@ Create a working directory for this class and prepare the data
 
 ```bash
 # create working directory
-mkdir -p ~/wk9_sv
+mkdir -p ~/genomics_sv
 # enter the directory
-cd ~/wk9_sv
+cd ~/genomics_sv
 # copy the data file from ~/data
 cp ~/data/structural_variation/* ./
 
 ```
 
-You should now see these files in your working directory (`~/wk9_sv`):
+You should now see these files in your working directory (`~/genomics_sv`):
 ```
 .
 |   ...(Data for Part 2)
@@ -130,7 +130,7 @@ Manta execution is a 2-step process, first you need to run `configManta.py`, whi
 Execute `configManta.py` with no arguments to see how to use the command:
 
 ```
-$ ~/wk9_sv/manta-1.6.0.centos6_x86_64/bin/configManta.py
+$ ~/genomics_sv/manta-1.6.0.centos6_x86_64/bin/configManta.py
 
 Usage: configManta.py [options]
 
@@ -170,7 +170,7 @@ $ configManta.py \
 Successfully created workflow run script.
 To execute the workflow, run the following script and set appropriate options:
 
-~/wk9_sv/10kb_del/runWorkflow.py
+~/genomics_sv/10kb_del/runWorkflow.py
 
 ```
 
@@ -319,7 +319,7 @@ This figure then shows what CNVs would look like for copy number = :
 (Yau and Holmes, 2008)
 
 However, in practice, you should typically not expect to see a mixture of multiple allele ratios for a given CN.
-For example, if a region has CN=3, you should see either AAAB/ABBB or just AABB, but not both.
+For example, if a region has CN=4, you should see either AAAB/ABBB or just AABB, but not both.
 
 In other words, in the BAF plots, you should either see a single central heterozygous band (allele-balanced), or only two split bands equally distanced from 0.5. Three separate bands as shown in the figure above is unlikely to happen.
 
