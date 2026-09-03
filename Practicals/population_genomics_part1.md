@@ -53,7 +53,7 @@ wget -O data/1kGP_chr22.vcf.gz.tbi 'ftp://ftp.ncbi.nlm.nih.gov/1000genomes/ftp/r
 
 <img src="images/computer_black_24dp.png" alt="Computer"/>  Activate the `popgen` environment and copy R scripts:
 ```bash
-source activate popgen
+conda activate popgen
 cp ~/data/ancient/prac_1/* ~/popGen_day1/scripts/
 ```
 
@@ -555,3 +555,8 @@ Rscript scripts/plot_smartpca.R
 </details>
 
 ---
+
+<img src="images/computer_black_24dp.png" alt="Computer"/>  Deactivate the `popgen` environment:
+```bash
+conda deactivate
+```
