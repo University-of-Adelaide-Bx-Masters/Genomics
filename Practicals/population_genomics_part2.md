@@ -52,9 +52,9 @@ source activate popgen
 
 <img src="images/computer_black_24dp.png" alt="Computer"/> Copy `R` scripts and unarchive the practical data (stored in `~/data/genomics/ancient/`) in your working directory.
 ```bash
-mkdir -p ~/popGen_prac2/{data,results,scripts}
-cd ~/popGen_prac2/
-cp ~/data/ancient/prac_2/*.R ~/popGen_prac2/scripts/
+mkdir -p ~/popGen_day2/{data,results,scripts}
+cd ~/popGen_day2/
+cp ~/data/ancient/prac_2/*.R ~/popGen_day2/scripts/
 tar xvzf ~/data/ancient/tutorial_popgen.tar.gz -C data/
 ll data/
 ```
@@ -150,7 +150,7 @@ Rscript scripts/plot_smartpca.R
 <img src="images/computer_black_24dp.png" alt="Computer"/> In the `R` console (not the terminal!), set the working directory and run *F*3 statistics on a subset of populations using the script `scripts/run_F3.R`. Stop where it says to stop...
 
 ```R
-setwd("~/popGen_prac2/")
+setwd("~/popGen_day2/")
 file.edit("scripts/run_F3.R")
 #run the script line by line in the console
 ```
