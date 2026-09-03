@@ -30,7 +30,7 @@ Icons are used to highlight sections of the practicals:
 
 <img src="images/computer_black_24dp.png" alt="Computer"/>  Activate the `popgen` environment:
 ```bash
-conda activate popgen
+source activate popgen
 ```
 
 <img src="images/book_black_24dp.png" alt="Book"/> I provided 2 datasets in `EIGENSTRAT` format. As a reminder, the `EIGENSTRAT` format consists of 3 files:
@@ -70,6 +70,7 @@ ll data/
   <summary>Answer</summary>
   213<br>
   <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br>
+ 
 </details>
 
 **Q2.** Is there missing data in the ancient dataset `AllAmerica_Ancient.eigenstrat.geno`?<br>
