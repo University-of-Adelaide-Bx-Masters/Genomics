@@ -69,15 +69,15 @@ ll data/
 <details>
   <summary>Answer</summary>
   213<br>
-  <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br><br> 
-</details>
+  <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br> 
+</details><br>
 
 **Q2.** Is there missing data in the ancient dataset `AllAmerica_Ancient.eigenstrat.geno`?<br>
 <details>
   <summary>Answer</summary>
   yes, there is a lot of 9<br>
   <code>grep -c "9" data/AllAmerica_Ancient.eigenstrat.geno</code><br>
-</details>
+</details><br>
 
 **Q3.** How many SNPs in each dataset? *Hint: look at the `.snp` files*<br>
 <details>
@@ -123,13 +123,13 @@ Rscript scripts/plot_smartpca.R
 <details>
   <summary>Answer</summary>
   No<br>
-</details>
+</details><br>
 
 **Q5.** PC1 seems to capture the variation observed between eskimos and modern Peruvian (PEL), while PC2 seems to capture the variation just within PEL. Knowing that PEL is individuals from Lima, the capital city of Peru, why would the PEL population be so diverse?<br>
 <details>
   <summary>Answer</summary>
  Mixed ancestry between Indigenous South Americans and Europeans (colonial history), Africans (slave trade), and East Asians (20th century migrations)<br>
-</details>
+</details><br>
 
 **Q6.** Where do the ancient samples cluster in regards to the PCA coordinates? And where in regards to contemporary populations?<br>
 <details>
@@ -198,7 +198,7 @@ file.edit("scripts/run_F3.R")
 <details>
   <summary>Answer</summary>
   Yes, the Eskimo population. Anzick-1 did not contribute ancestry to the Eskimos<br>
-</details>
+</details><br>
   
 **Q9.** Is there any test population/individual for which *D* is different from 0? Any particular pattern to report?<br>
 <details>
