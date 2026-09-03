@@ -69,8 +69,7 @@ ll data/
 <details>
   <summary>Answer</summary>
   213<br>
-  <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br>
- 
+  <code>wc -l data/AllAmerica_Ancient.eigenstrat.ind</code><br><br> 
 </details>
 
 **Q2.** Is there missing data in the ancient dataset `AllAmerica_Ancient.eigenstrat.geno`?<br>
