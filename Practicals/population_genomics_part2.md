@@ -94,6 +94,12 @@ ll data/
 <img src="images/computer_black_24dp.png" alt="Computer"/> Make sure to copy the `$PATH` variable to `.Renviron`.
 ```bash
 echo "PATH=$PATH" >> ~/.Renviron
+### ONLY TRY THE BELOW COMMAND LINE IF COPYING THE $PATH TO .Renviron DOES NOT WORK ###
+Sys.setenv(PATH = paste(
+  "/apps/conda3/singularity/envs/popgen/bin",
+  Sys.getenv("PATH"),
+  sep = ":"
+))
 ```
 <img src="images/computer_black_24dp.png" alt="Computer"/> Go to Session > Restart R. 
 
