@@ -343,7 +343,7 @@ plink \
 **Q16.** How many variants are stored in the `.bim` file? How does it compare with the number of variants in `plink_temp.bim`?<br>
 <details>
   <summary>Answer</summary>
-  73,246 variants<br>
+  73,246 variants and 1,103,547 variants<br>
   <code>wc -l results/1kGP_chr22.bim</code><br>
   <code>wc -l results/plink_temp.bim</code><br>
 </details>
