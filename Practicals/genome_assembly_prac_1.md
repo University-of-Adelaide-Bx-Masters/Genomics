@@ -1,254 +1,184 @@
-# [Genomics](http://university-of-adelaide-bx-masters.github.io/Genomics/)
+
+# Eukaryotic Genome Assembly Part 1
 {:.no_toc}
 
-# Genome Assembly Practical: Part 1
+#### By Chelsea Matthews
 {:.no_toc}
-
-*By Zhipeng Qu and Chelsea Matthews* 
 
 * TOC
 {:toc}
 
-# **Introduction**
+# **1. Introduction/Background**
 
-## 1.1 *De-novo* assembly of eukaryotic genomes
+## 1.1 Eukaryotic Genome Assembly
 
-Today and in the next practical we will be looking at *de-novo* assembly of eukaryotic genomes which are generally larger and more complex than prokaryotes.  
-The human genome falls into this category as it is a large diploid (~3.1Gbp haplotype), comprised of ~50% repetitive elements. 
+Today and in the next practical we will be looking at *de-novo* assembly of eukaryotic genomes which are generally larger and more complex than prokaryotes.
+The human genome falls into this category as it is a large diploid (~3.1Gbp haplotype), comprised of ~50% repetitive elements.
 
-## 1.2 Practical Overview
-
-While the focus of this practical and the next is on the assembly of large complex genomes, it's not feasible for us to actually assemble a large complex genome (i.e. human genome) because frankly, our VM's are far too small.
+While the focus of this practical is technically on the assembly of large complex genomes, it's not feasible for us to actually assemble a large complex genome (i.e. human genome) because our VM's are far too small.
 Assembling a human genome from an appropriate amount of long-read data takes hundreds to thousands of CPU hours and hundreds of Gb of RAM (see Flye assembly benchmarking [here](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md#-flye-benchmarks)).   
-Therefore we'll be assembling a small eukaryotic genome, fission yeast (*Schizosaccharomyces pombe*).
-Even though the fission yeast genome is fairly small (~15 Mb with 3 chromosomes), it's still more complicated than the prokaryotic organisms you've looked at so far and it will still take ~20 minutes for the assembly to run even with very low (~5x) long read coverage.
+Therefore we'll be assembling a small eukaryotic genome instead - fission yeast (*Schizosaccharomyces pombe*). Even though this genome is fairly small (~12Mbp), it will still take about 20 minutes for the assembly to run,  even with very low (~5x) long read coverage.
 
-What we will actually do: First estimate the size of a haploid yeast genome using illumina reads. 
-Then Denovo assemble HIFi and ONT and check quality of resulting assemblies.
-This will highlight the challenges caused by repetitive regions + genome size in comparison with long reads. 
-
-
-## 1.3 Learning Outcomes 
-
-- Practice bash commands learned previously
-- Practice QC for Illumina data
-- Learn how to do *de-novo* genome assembly using Flye with long reads
-- Learn how to assess your genome assembly quality using QUAST and BUSCO
-- Understand the importance of haplotype phasing and the concept of trio-sequencing for phasing haplotypes
-
-# **2. Setup**
-
-## 2.1 Software
-
-As in previous weeks, you will be using RStudio to interact with your VM.
-Let's activate the 'bioinf' environment so that we can access the software we'll need for the practical.
-
-```bash
-source activate bioinf
-```
-
-The table below lists all of the tools we will be using in this Practical and the next. 
-
-| Tool/Package    | Version      | URL                                                        |
-|----------------|--------------|------------------------------------------------------------|
-| fastQC         | v0.11.9      | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ |
-| assembly-stats | v1.0.1       | https://github.com/sanger-pathogens/assembly-stats         |
-| jellyfish      | v2.2.10      | https://github.com/gmarcais/Jellyfish                      |
-| genomescope    | v1           | https://github.com/schatzlab/genomescope                   |
-| flye           | v2.8.1-b1676 | https://github.com/fenderglass/Flye                        |
-| QUAST          | V5.2.0       | https://github.com/ablab/quast                             |
-| BUSCO          | v5.4.4       | https://busco.ezlab.org/                                   |
-
-Two of these tools, assembly-stats and genomescope, are not installed in the `bioinf` environment and will instead be run directly from scripts. Setting this up is covered in the next section. 
-
-
-The following table shows the estimated run time on our VMs for the different processes we'll be running. 
-
-
-| Step              | Tool/Package        | Estimated run time  |
-|-------------------|---------------------|---------------------|
-| QC                | fastqc              | < 1 min             |
-| QC                | assembly-stat       | < 1 min             |
-| genome survey     | jellyfish           | < 5 mins            |
-| genome survey     | genomescope         | < 1 min             |
-| genome assembly   | flye + nanopore_5x  | ~20 mins            |
-| genome assembly   | flye + pacbio_5x    | ~20 mins (optional) |
-| genome assembly   | flye + nanopore_10x | ~30 mins (optional) |
-| genome assembly   | flye + pacbio_10x   | ~30 mins (optional) |
-| genome assessment | QUAST               | < 5 min             |
-| genome assessment | BUSCO               | ~10-20 mins (each)  |
-
-
-
-## 2.2 Create directory structure
-
-The following is the directory structure we'll be working within today and in the next practical. 
-
-
-Create these directories using the code below. 
-
-```bash
-cd ~/
-mkdir prac_genome_assembly
-cd prac_genome_assembly
-mkdir 01_bin 02_DB 03_raw_data 04_results 05_scripts
-cd 04_results
-mkdir 01_QC 02_genome_survey 03_genome_assembly 04_genome_assessment
-
-```
-
-Check your folder structure:
-
-```bash
-cd ~/
-tree ./prac_genome_assembly
-```
-
-Because `assembly-stats` and `genomescope` are not installed in the `bioinf` environment, we will run them directly from scripts. 
-The scripts are located in `~/data/prac_genome_assembly/01_bin/`, and we will put them in the `01_bin` folder of our project.
-
-```bash
-cd ~/prac_genome_assembly/01_bin
-cp ~/data/prac_genome_assembly/01_bin/* ./
-```
-
-
-## 2.3 Get data
-
-Create symlinks to the raw data needed for this practical as below. 
-The original dataset from which this data was subset can be found [here](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919).
-
-
-```bash
-cd ~/prac_genome_assembly/02_DB
-cp ~/data/prac_genome_assembly/02_DB/* ./
-cd ~/prac_genome_assembly/03_raw_data
-cp ~/data/prac_genome_assembly/03_raw_data/*.fq ./
-```
-
-We will be using raw sequencing data from different sequencing platforms in this Prac. 
-These fastq files can be found in `~/data/prac_genome_assembly/01_raw_data` and are described in the table below:
-
-| File(s)                                    | Platform | Coverage | Description                                                |
-|--------------------------------------------|----------|----------|------------------------------------------------------------|
-| illumina_SR_20x_1.fq, illumina_SR_20x_2.fq | Illumina | ~20x     | Paried-end (PE150) short reads from Illumina MGISEQ-2000RS |
-| nanopore_LR_5x.fq                          | Nanopore | ~5x      | Long reads from Nanopore PromethION                        |
-| nanopore_LR_10x.fq                         | Nanopore | ~10x     | Long reads from Nanopore PromethION                        |
-| pacbio_LR_5x.fq                            | PacBio   | ~5x      | Long reads from PacBio_SMRT Sequel                         |
-| pacbio_LR_10x.fq                           | PacBio   | ~10x     | Long reads from PacBio_SMRT Sequel                         |
-
-We will use the paired-end illumina short reads to do genome survey analysis (estimate the genome size), and use the other four Long Reads (LR) files to do genome assembly separately.
-
-Due to limitation of computing resources in our VMs, we will use subsets of raw sequencing reads. 
-The original sequencing dataset is very big, you can access it from this [link](https://www.ncbi.nlm.nih.gov/sra?term=SRP352919). Here is some useful information about the fission yeast genome:
-
+Here is some useful information about the fission yeast genome:
 - Reference genome: ASM294v2
 - Number of chromosomes: 3 nucleus chromosomes
 - Genome size (reference): 12,591,251 bp
 - Ploidy: Haploid
 
+## 1.2 Practical Overview
 
+We have four long-read datasets available. They are Nanopore reads with 5x and 10x coverage and PacBio reads with 5x and 10x coverage. We will assemble one of these datasets  in class (because it takes about 20 minutes to run) and the remaining three will be provided. We will then compare the quality of these assemblies using two different measures.
 
-# **3. Genome Survey Analysis**
+The steps in this analysis and their corresponding subdirectory are shown in the table below: 
 
-When we start a whole genome sequencing project for a new species, we normally need to collect some genomics information before we do the de novo genome assembly, such as we need to know how big the genome is. In the lecture, we had learned that we can use lab-based flow cytometry to estimate the genome size, and we can also use short reads (illumina reads) to do this computationally. In this part, we will learn how to estimate the genome size using short reads.
+| Subdirectory | Step                                |
+| ------------ | ----------------------------------- |
+| 0_data       | Get data                            |
+| 1_qc         | Assess read quality and trim reads  |
+| 2_assemble   | Assemble the genome from long reads |
+| 3_quast      | Assess assembly contiguity          |
+| 4_busco      | Assess completeness of gene space   |
 
+## 1.3 Learning Outcomes
+- Learn how to do basic quality assessment on long reads
+- Learn how to do *de-novo* genome assembly using Flye with long reads
+- Learn how to assess genome assembly quality using QUAST and BUSCO
 
-## 3.1 QC of Illumina reads
+# **2. Setup**
 
-The first step in any bioinformatics analysis is always quality control. 
-Let's check the quality of our short reads (illumina reads) using `fastQC`.
-
-```bash
-cd ~/prac_genome_assembly/04_results/01_QC
-fastqc ~/prac_genome_assembly/03_raw_data/illumina_SR_20x_1.fq ~/prac_genome_assembly/03_raw_data/illumina_SR_20x_2.fq -o ./ -t 2
-```
-
-* *How many sequences are there in the dataset?*
-* *How long are the Illumina reads?*
-* *How good are the illumina reads?* 
-
-
-## 3.2 Get k-mer distribution
-
-The first step of genome size estimation is to get the k-mer distribution using the available short reads. We can use `jellyfish` to do this.
+Activate your `bioinf` environment.
 
 ```bash
-cd ~/prac_genome_assembly/04_results/02_genome_survey
-
-jellyfish count -C -m 21 -s 4G -o illumina_SR_20x.21mer_out \
-    ~/prac_genome_assembly/03_raw_data/illumina_SR_20x_1.fq \
-    ~/prac_genome_assembly/03_raw_data/illumina_SR_20x_2.fq
-
-jellyfish histo -o illumina_SR_20x.21mer_out.histo illumina_SR_20x.21mer_out
-
+source activate bioinf
 ```
 
-`jellyfish` will break short reads into fixed length short sequences, which we call them [k-mers](https://en.wikipedia.org/wiki/K-mer) (we use 21-mer in this project). The size of k-mers should be large enough allowing the k-mer to map uniquely to the genome (a concept used in designing primer/oligo length for PCR). However, too large k-mers leads to overuse of computational resources. `21` is normally a good start. In the `jellyfish count` command, `-C` means we count k-mers at both strands, `-s 4G` is used to control the memory usage, and `-m 21` means we will count 21-mers. After we count k-mers, we use `jellyfish histo` to get the frequency of k-mers with certain copy numbers.
-
-## 3.3 Estimate genome length 
-
-After we get the `histo` file from the `jellyfish` run, we can use that to do genome survey with `genomescope`. `genomescope` is a R script, we can run it with following command:
+Create the directory structure for the prac and move into it.
 
 ```bash
-cd ~/prac_genome_assembly/04_results/02_genome_survey
-
-Rscript ~/prac_genome_assembly/01_bin/genomescope.R illumina_SR_20x.21mer_out.histo 21 150 illumina_SR_20x.21mer
+mkdir -p euk_assembly_pt1/{0_data,1_qc,2_assemble,3_quast,4_busco}
+cd euk_assembly_pt1
 ```
 
-In the command, `21` means we are using 21-mer, `150` is the short reads length, and `illumina_SR_20x.21mer` will be the output folder. We can check the k-mer distribution by checking the file `plot.png`, which is normally located in the output folder `illumina_SR_20x.21mer`
-
-
-# **4. Long Read summary statistics**
-
-Let's use the tool `assembly-stats` to get more information about our long reads. 
+Now create symlinks to the data for todays practical in your `0_data` directory.
 
 ```bash
-cd ~/prac_genome_assembly/04_results/01_QC
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_5x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_5x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/nanopore_LR_10x.fq
-~/prac_genome_assembly/01_bin/assembly-stats ~/prac_genome_assembly/03_raw_data/pacbio_LR_10x.fq
+ln -s /shared/data/euk_assembly/part1/*.fq 0_data/.
+# check contents of 0_data
+ls -lh 0_data/
 ```
 
-From the output text, answer the following:
+You should have symlinks to the four fastq files described in the table below. 
 
-* *Which dataset has the largest average read length?*
-* *Which dataset has the longest individual read?*
-* *Assuming that our genome is approximately 15 Mb long, what coverage do these reads give us? Remember that Coverage = (total number of bases in reads)/genome size*
-* *Do you think this is sufficient to generate a good assembly? Why or why not?*
+| File(s)         | Platform | Coverage | Description                         |
+| --------------- | -------- | -------- | ----------------------------------- |
+| nanopore_5x.fq  | Nanopore | ~5x      | Long reads from Nanopore PromethION |
+| nanopore_10x.fq | Nanopore | ~10x     | Long reads from Nanopore PromethION |
+| pacbio_5x.fq    | PacBio   | ~5x      | Long reads from PacBio_SMRT Sequel  |
+| pacbio_10x.fq   | PacBio   | ~10x     | Long reads from PacBio_SMRT Sequel  |
 
-
-# **5. *De-novo* genome assembly** 
-
-## 5.1 assembly using Flye
-
-Okey! Now we can do the de novo genome assembly. There are tons of assemblers to do de novo genome assembly. Some popular ones are `canu`, `Flye`, `smartdenovo`, `wtdbg`, etc. In this prac, we will be using `Flye`.
-
-Do a test run to see if it works using the following (make sure you are under the `bioinf` conda environment):
-
-```
-flye
-```
-
-The Flye usage instructions should be printed to the screen. 
-
-Now let's using the flye to do assembly on the `nanopore_LR_5x` dataset. 
+We will also be using `chopper` today which isn't installed in the `bioinf` environment. 
+Create a `scripts` directory and copy the `chopper-linux` script into it. Then change the script permissions (by giving all users executable rights) so that you can run it. 
 
 ```bash
-cd ~/prac_genome_assembly/04_results/03_genome_assembly
-
-flye --nano-raw ~/prac_genome_assembly/03_raw_data/nanopore_LR_5x.fq --out-dir nanopore_LR_5x --threads 2
+mkdir scripts
+# get the chopper script
+cp /shared/data/euk_assembly/scripts/chopper-linux scripts/.
+# make it executable
+chmod +x scripts/chopper-linux
+# check that it is executable
+ls -lh scripts/chopper-linux
 ```
 
-It should take ~20 minutes for the assembly to complete.   
 
-## 5.2. While we wait ...  Resources for genome assembly
+# **3. QC and Trimming**
 
-Larger, more complex genomes contain high percentages of repeats. Assembling these repeats accurately with short reads is not effective. Long reads that are able to span these repeat regions result in much better assemblies. There are many long read assembly tools available including the following: 
+## 3.1 Data quantity and quality
+We'll first use `seqkit` to get some basic information about the reads in each of our `fastq` files. 
+
+```bash
+## First, make a file and add a header to it
+echo "# Raw data" > 1_qc/summary.stats
+
+## Run seqkit stats and append the results to the file we just made
+seqkit stats 0_data/nanopore_5x.fq 0_data/nanopore_10x.fq 0_data/pacbio_5x.fq 0_data/pacbio_10x.fq -N 10,50,90 >> 1_qc/summary.stats
+
+```
+
+Use `less`  to view the file you created to answer the questions below. You will need to do some basic calculations. 
+
+❓**Questions:**
+- Which dataset has the largest average read length?
+* Which dataset has the longest individual read?
+* How would you calculate the read coverage for a single dataset (assuming a 12.5Mbp genome)?
+* What information does the N90 column provide?
+
+That was a very high level summary of our data but it would be good to be able to check the quality of our reads. 
+
+We will only run these steps for the two 10x datasets to save time. In any other scenario, we would assess the quality of all of our data. 
+
+We will be using the tool `NanoPlot` for quality assessment. Despite its name, it works for PacBio reads too. We will only be running it on the two 10x datasets to save time. However, in any other scenario, you would be assessing the quality of all of your data. 
+
+Run `NanoPlot` on  your 10x long-read datasets as below.  The directories are provided for all four datasets but the code for the 5x samples is commented out.   
+
+```bash
+mkdir -p 1_qc/{nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x}
+
+#NanoPlot -t 2 --outdir 1_qc/nanopore_5x --prefix nanopore_ --fastq 0_data/nanopore_5x.fq
+
+NanoPlot -t 2 --outdir 1_qc/nanopore_10x --prefix nanopore_ --fastq 0_data/nanopore_10x.fq
+
+#NanoPlot -t 2 --outdir 1_qc/pacbio_5x --prefix pacbio_ --fastq 0_data/pacbio_5x.fq
+
+NanoPlot -t 2 --outdir 1_qc/pacbio_10x --prefix pacbio_ --fastq 0_data/pacbio_10x.fq
+
+```
+
+NanoPlot produces quite a lot of output and a report that is (sort of) similar to the report produced by FASTQC. Use the file browser to find and open both the `nanopore_NanoPlot-report.html`  and `pacbio_NanoPlot-report.html`  files in a web browser. 
+Try to answer the questions below.
+
+❓**Questions:**
+- Compare the "Non weighted histogram of read lengths" plots (the third one down) between your Nanopore and PacBio datasets. What do you see? 
+ - Looking at the very last plot in the report - "Read lengths vs Average read quality kde plot", in what range do most of the average read qualities for Nanopore reads fall? What about PacBio reads?
+ - Do you think that removing all reads with average quality less than 10 would be appropriate for the Nanopore dataset? Discuss.
+
+Keep in mind that this particular Nanopore dataset is quite old and reads generated more recently is generally of higher quality than this. PacBio read quality has also improved and is still more accurate than Nanopore but the difference between the two technologies is not as big as we see in these older datasets. 
+
+## 3.2. Trimming
+
+Run `chopper` as below to remove any reads with an average quality of less than 10. Nothing will be removed from the PacBio datasets but this will ensure all of your trimmed data is in the same location.
+
+```bash
+./scripts/chopper-linux -q 10 -i 0_data/nanopore_5x.fq > 1_qc/nanopore_5x.fq
+
+./scripts/chopper-linux -q 10 -i 0_data/nanopore_10x.fq > 1_qc/nanopore_10x.fq
+
+./scripts/chopper-linux -q 10 -i 0_data/pacbio_5x.fq > 1_qc/pacbio_5x.fq
+
+./scripts/chopper-linux -q 10 -i 0_data/pacbio_10x.fq > 1_qc/pacbio_10x.fq
+```
+
+Now, run `seqkit` on your trimmed fastq files again to see how much sequencing data (and hence approximate genome coverage) you have remaining. 
+
+```bash
+echo -e "#\n# Trimmed data" >> 1_qc/summary.stats
+
+seqkit stats 1_qc/nanopore_5x.fq 1_qc/nanopore_10x.fq 1_qc/pacbio_5x.fq 1_qc/pacbio_10x.fq -N 10,50,90 >> 1_qc/summary.stats 
+```
+
+❓**Question:**
+- How have the avg_len and max_len for the Nanopore reads changed? 
+- How much read coverage do you have now in your Nanopore 5x dataset (assuming a 12.5Mbp genome). 
+- Do you think that you have enough data to generate a good quality assembly?
+# **4. Assembly**
+
+Now we're ready to assemble our genome. 
+We will only be running one assembly during this practical as they take at least 20 minutes to run. 
+
+There are many different assembly tools available which include:
 
 * Canu 
 * Flye
+* Hifiasm
 * NextDenovo
 * Wtdbg2 
 * Raven
@@ -258,72 +188,202 @@ Larger, more complex genomes contain high percentages of repeats. Assembling the
 
 These tools all do more or less the same job (ie. long read assembly) but with slight differences. 
 
-When we are assembling a small genome, memory (RAM) and CPU (compute threads/cores) requirements are relatively low and so we can choose our assembler based almost entirely on the quality of the resulting assembly. 
-While we can still do this to some degree for larger genomes, resource allocations and limitations in High Performance Computing (HPC) environments mean that some tools may not be suitable for our particular dataset (we may not be able to run the assembly to completion due to time or resource limitations) and we need to more carefully consider the parameters we use for the assembly so that we don't need to re-run it unnecessarily. 
-Even without considering the cost of wasted resources (and this can be measured in dollars where we are using a service like Amazon Web Service (AWS)), re-running these assemblies can take a long time. 
+## 4.1 Assemble Genome
+
+We will be using Flye for our assembly. 
+Check that it is working as below. The usage instructions should be printed to the screen.
+
+```bash
+flye
+```
+
+We will be assembling just one of our datasets in class and assemblies generated from the remaining three datasets will be provided. Code is provided for the nanopore_5x dataset. 
+
+```bash
+mkdir -p 2_assemble/nanopore_5x
+
+flye --nano-raw 1_qc/nanopore_5x.fq --out-dir 2_assembly/nanopore_5x --threads 2
+```
+
+This will take about 20 minutes to run. 
+
+### While we wait...
 
 One of the difficulties with assembling larger genomes is working out what resources a tool will require and deciding whether it will be suited to assembling your genome of interest within the resources available to you. 
-The authors of Flye did some benchmarks on computational resources required when assembling genomes from different species with different input data. You can check this from this [link](https://github.com/fenderglass/Flye#flye-benchmarks). Check following questions after you have a look at the table.
+The authors of Flye did some benchmarks on computational resources required when assembling genomes from different species with different input data. You can check this from this [link](https://github.com/fenderglass/Flye#flye-benchmarks). Answer the following questions by looking at the benchmarking table.
 
-* *How many CPU hours (approximately) are required to assemble a bacteria?*
-* *How many CPU hours (approximately) are required to assemble a mammal with high raw-read coverage?*
-* *How many CPU hours (approximately) are required to assemble a mammal from HiFi reads?*
-* *Why is the number of CPU hours and memory requirement lower for a HiFi assembly compared with a non-HiFi read assembly?*
-* *If you had access to a single node with 48 compute threads and sufficient memory, how long (in hours) would it take to assemble a "well-behaved large genome"?* 
-* *How long would this same assembly take on your local VM (assuming memory was not a limitation) with two compute threads?*
+❓**Questions:**
+* How many CPU hours (approximately) are required to assemble a bacteria?
+* How many CPU hours (approximately) are required to assemble a mammal with high raw-read coverage?
+* How many CPU hours (approximately) are required to assemble a mammal from HiFi reads?
+* Why is the number of CPU hours and memory requirement lower for a HiFi assembly compared with a non-HiFi read assembly?
+* If you had access to a single node with 48 compute threads and sufficient memory, how long (in hours) would it take to assemble a "well-behaved large genome"?
+* How long would this same assembly take on your local VM (assuming memory was not a limitation) with two compute threads?
 
-You can see now why we aren't assembling a larger genome (i.e. human genome) using our VM. 
 
-## 5.3 Looking at the assembly report
+## 4.2 When Flye finishes...
 
-Flye will generate 5 folders, which store output files from 5 stages of Flye, and some important individual files. These includes:
+When flye finishes, it will  print some basic information about your assembly to the terminal. 
 
+❓**Questions:**
+- How long is your assembly in total? 
+- How many contigs/fragments are there?
+- If your assembly was perfect, how many fragments would you expect?
+
+Flye will also generate 5 folders, which store output files from the 5 stages of Flye, and some important individual files. These include:
+
+- **assembly.fasta**: This is the final assembly. Contains contigs and possibly scaffolds.
 - params.json: the parameters that Flye used for this run
 - assembly_graph.{gv or gfa}: Final repeat graph. The edges of repeat graph represent genomic sequence, and nodes define the junctions. You can get more info about the repeat graph from [here](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md#-repeat-graph) 
-- **assembly.fasta**: This is the final assembly. Contains contigs and possibly scaffolds.
 - assembly_info.txt: Extra information about contigs.
 - flye.log: Log report showing all running info and summary of final assembly.
 
-You can check the log report using following commands:
 
-```
-cd ~/prac_genome_assembly/04_results/03_genome_assembly/nanopore_LR_5x
-ls 
+# **5. Assembly Quality - QUAST**
 
-less flye.log
-```
-Type `G` to go to the end of the file, and you will see a brief summary about the assembly.
+Now that we have an assembly, let's look at assessing assembly quality.
 
-* *How many contigs does the final assembly have?*
-* *How long is the final assembly and how does this compare with the estimated size of the genome?*
+The tool QUAST (QUality ASsesment Tool) [documentation here](http://quast.sourceforge.net/docs/manual.html) can be run on one or more assemblies at once and produces some handy comparison statistics and graphics.
+It can be run with or without a reference genome. 
+If we provide a reference genome, each of the assemblies will be compared to this reference which allows QUAST to produce some additional statistics. 
 
-When you are finished, exit out of the report with `q`. 
+Here we will run it without a reference.
 
-### 5.4 Assembly using other datasets
-
-You can do the genome assembly for the other three LR datasets:
+Because you have only generated one assembly, I've provided four other assemblies so that you have something to compare with. Place all of these assemblies in a single directory `2_assembly/all` so that they're easy to find. Both of the provided Nanopore assemblies (5x and 10x) were generated from the untrimmed datasets.
 
 ```bash
-cd ~/prac_genome_assembly/04_results/03_genome_assembly
+mkdir -p 2_assembly/all
 
-flye --pacbio-raw ~/prac_genome_assembly/03_raw_data/pacbio_LR_5x.fq --out-dir pacbio_LR_5x --threads 2
-flye --nano-raw ~/prac_genome_assembly/03_raw_data/nanopore_LR_10x.fq --out-dir nanopore_LR_10x --threads 2
-flye --pacbio-raw ~/prac_genome_assembly/03_raw_data/pacbio_LR_10x.fq --out-dir pacbio_LR_10x --threads 2
+# copy your assembly to the new dir and rename
+cp 2_assembly/nanopore_5x/assembly.fasta 2_assembly/all/nanopore_5x.fasta
+
+# Copy provided assemblies to new dir
+cp /shared/data/euk_assembly/part1/assemblies/* 2_assembly/all/.
+```
+
+Now we'll run QUAST on all 5 assemblies.
+
+```bash
+quast -o 3_quast/without_ref -t 2 --labels "nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x" 2_assembly/all/nanopore_5x.fasta 2_assembly/all/nanopore_10x.assembly.fasta 2_assembly/all/pacbio_5x.assembly.fasta 2_assembly/all/pacbio_10x.assembly.fasta
 
 ```
 
-Each of these will take 20-30 mins. I encourage you to run these jobs before the next session, and go through the reports (flye.log) to get ideas about the different assemblies, and we will look into them in more details in the next session.
+This won't take very long (< 1 min).
 
-### 5.5 Additional information - diploid assembly
+Open the `icarus.html` file located in the `3_quast/without_ref` directory in a web browser. 
 
-The fission yeast is a small haploid genome which means that it is fairly straightforward nowadays to assemble. 
-What is more challenging are larger diploid and polyploid genomes.
+Click on the QUAST Report link and have a look at the metrics produced by QUAST for each of your assemblies. 
 
-* *Can you think of a few reasons why diploid or polyploid genomes are more difficult to assemble than haploid genomes? Relate these reasons back to the OLC algorithm if you can.*
-* *If we were assembling a diploid genome with a genome size of 2Gbp, under what circumstances might our resulting assembly be greater than 2Gbp in length?*
+* Based on the N50 and N90 scores, which is the best assembly?
 
-Canu is capable of assembling both haplotypes of a diploid genome - termed phasing. 
-Have a look at the paper below (mainly the first figure) to understand how this works.
+You've previously learnt about N50 as a measure of assembly contiguity ([refresh your memory here](https://en.wikipedia.org/wiki/N50,_L50,_and_related_statistics#N50)) but N50 on its own only gives us a snapshot into assembly contiguity.
+A better way to look at assembly contiguity is to inspect a cumulative contig length plot.
+This is particularly helpful when we want to compare multiple different assemblies of the same genome or species. 
 
-[Haplotype-Resolved Cattle Genomes Provide Insights Into Structural Variation and Adaptation](https://www.biorxiv.org/content/10.1101/720797v3.full)
+Scroll down and inspect the Cumulative Length plot. Look at the Nx plot and GC Content plots too while you're there. 
+
+❓**Questions:**
+* Given that the fission yeast genome should be about 13Mbp long, which assembly do you think looks the best based on the contig length distributions?
+* Spend some time interpreting the cumulative length plot. Under what circumstances would a cumulative length plot be more informative than just comparing N50s?
+* What would an assembly with only one contig look like on this plot?
+
+Now let's have a look at the Icarus contig size viewer. 
+Click on the "View in Icarus contig browser" link at the top of the page. 
+
+This isn't really new information but it can be nice to visually see the lengths of our contigs. 
+It's also a nice way to see the N50 and N90 values distributed on a visual representation of the assembly contigs. 
+
+* Based on what you've seen in the QUAST report, which assembly do you think looks the best?
+
+# **6. Assembly Quality - BUSCO**
+
+Firstly, BUSCO is not installed in the `bioinf` environment. It is in an environment called `busco`. Therefore, to use it, we first have to activate the `busco` environment. This will make all of the software in the `bioinf` environment unavailable until you activate it again. 
+
+```bash
+source activate busco
+```
+
+BUSCO is a tool that helps us measure how well we have assembled the gene space of an assembly. 
+It does this by searching our assembly for a list of genes that should be present in our assembly in a single copy. 
+These genes are known as "Universal Single Copy Orthologs" and are genes that are present in at least 90% of the species/clade members and are only present in a single copy within at least 90% of the species/clade.
+It is essentially a list of genes that we are almost certain should be present within our genome once.
+
+Obviously this list of genes is different for different species/clades and so BUSCO has a list of datasets that we can choose from. 
+
+Have a look at this list using the command below. 
+
+```
+busco --list-datasets
+```
+
+Before we run BUSCO, we need to decide which lineage dataset we should use for our assembled species. Get some ideas about the taxonomy of your assembled species is always a good starting point. For example, for fission yeast, we can get its taxonomy from [NCBI taxonomy browser](https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=4896). 
+
+Compare the taxonomy with the above listed available BUSCO lineage datasets and you'll find that there are three datasets we should be able to use for fission yeast, which are `eukaryota_odb12.2`, `fungi_odb12.2` and `ascomycota_odb12.2` following the taxonomy tree.
+Datasets closer to the branch end of taxonomy will containsingle copy orthologs that are more specific to the target species.
+
+❓Why does the `ascomycota` database have more single-copy orthologs than the `eukaryota` database? 
+
+Generally speaking, you should choose the lineage dataset closer to the branch end of taxonomy. But in this prac, choosing `ascomycota` will take much longer time to run than choosing `eukaryota` because there are a so many more orthologs. 
+Therefore, we will use `eukaryota`.
+
+**NOTE:** The databases listed by BUSCO are mostly `odb12.2` because that is the most recent version available online. HOwever, our installation includes only `odb10`. Therefore,  make sure that you specify `eukaryota_odb10` when you run BUSCO. 
+
+Let's run BUSCO on your Nanopore 5x assembly. 
+
+```bash
+busco -m genome -i 2_assembly/nanopore_5x/assembly.fasta -o 4_busco/nanopore_5x -f -c 2 -l eukaryota_odb10
+```
+
+This will take ~10 mins to finish. 
+When the job is finished, you should get output printing to the terminal that includes something similar to the following. Let's look at the example here while we wait.
+
+```
+        --------------------------------------------------
+        |Results from dataset eukaryota_odb10             |
+        --------------------------------------------------
+        |C:94.9%[S:92.9%,D:2.0%],F:2.0%,M:3.1%,n:255      |
+        |242    Complete BUSCOs (C)                       |
+        |237    Complete and single-copy BUSCOs (S)       |
+        |5      Complete and duplicated BUSCOs (D)        |
+        |5      Fragmented BUSCOs (F)                     |
+        |8      Missing BUSCOs (M)                        |
+        |255    Total BUSCO groups searched               |
+        --------------------------------------------------
+```
+
+These results are also stored in the `short_summary*.txt` file in `4_busco/nanopore_5x` directory and are what we need for the next step. 
+
+Now, we could interpret these results on their own but it's a lot more interesting if we have more than one assembly to compare. 
+
+I have already run BUSCO on each of the provided assemblies. Make a new directory, copy over your assembly results, and then the BUSCO results for the other three assemblies. We put them all in the same directory because the BUSCO `generate_plot.py` script (this is usually installed along with BUSCO) requires it. 
+
+```bash
+mkdir -p 4_busco/all 
+
+# copy your busco results to the new dir
+cp 4_busco/nanopore_5x/short_summary*.txt 4_busco/all/.
+
+# copy provided busco results to new dir
+cp /shared/data/euk_assembly/part1/busco_results/* 4_busco/all/.
+```
+
+Do a quick check in the `4_busco/all` folder to check that there are four files named like below:
+
+`short_summary.specific.eukaryota_odb10.xxx.txt`
+
+Now let's visualise the results. 
+
+```bash
+generate_plot.py -wd 4_busco/all
+```
+
+If all goes well, this should produce a `busco_figure.png` in the `4_busco/all` directory. 
+
+Navigate to it and open the png. 
+
+* Which assembly is the best according to the BUSCO metrics? Why?
+* *S. pombe* has a haploid genome but there are duplicated genes present in the assembly. What do you think this means? 
+* Based on the BUSCO and QUAST results, which assembly do you think looks the best?
+- Do you think that the best of these assemblies would be considered a reference-quality assembly? Discuss.
+
 
