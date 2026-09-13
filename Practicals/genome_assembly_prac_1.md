@@ -93,7 +93,8 @@ ls -lh scripts/chopper-linux
 # **3. QC and Trimming**
 
 ## 3.1 Data quantity and quality
-We'll first use `seqkit` to get some basic information about the reads in each of our `fastq` files. 
+
+While you are probably familiar with using the tool `fastqc` by now to assess the quality of Illumina sequencing (and perhaps have used it to get some information about long-read datasets), there are other ways and tools we can use. Today we'll use `seqkit` to get some basic information about the reads in each of our `fastq` files first, and then use `NanoPlot` for a more indepth assessment. 
 
 ```bash
 ## First, make a file and add a header to it
@@ -143,24 +144,40 @@ Try to answer the questions below.
  - Looking at the very last plot in the report - "Read lengths vs Average read quality kde plot", in what range do most of the average read qualities for Nanopore reads fall? What about PacBio reads?
  - Do you think that removing all reads with average quality less than 10 would be appropriate for the Nanopore dataset? Discuss.
 
-Keep in mind that this particular Nanopore dataset is quite old and reads generated more recently is generally of higher quality than this. PacBio read quality has also improved and is still more accurate than Nanopore but the difference between the two technologies is not as big as we see in these older datasets. 
+Keep in mind that this particular Nanopore dataset is quite old (submitted to NCBI SRA in 2022 - see [here](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA792932) for more information on this project) and reads generated using newer Nanopore kits are generally of higher quality than this. 
+PacBio read quality has also improved. 
+While PacBio sequencing  is still usually more accurate than Nanopore, the difference between the two technologies is not as big as we see in these older datasets. 
 
 ## 3.2. Trimming
 
-We will run `chopper` as below to remove any reads with an average quality of less than 10. Nothing will be removed from the PacBio datasets but this will ensure all of your trimmed data is in the same location.
-However, `chopper` can be run in a number of different ways. Take a look at the help docs to see a few other ways that it can be used. 
+Because we only have time to run one assembly today, we won't bother trimming our PacBio datasets.
+They are of reasonably high quality anyway and we don't have time to assemble them. 
+We will be trimming our Nanoopore reads though and will be assembling one of the two datasets.
+
+
+❗⭐ **EXERCISE:**
+
+Take a look at the `chopper` help docs in the Trimming Options section to see the different approaches to trimming. 
+Based on what you saw in the `NanoPlot` report, choose a trimming approach for your Nanopore reads and run it on both of your Nanopore datasets. 
+Send the output to the appropriate directory as shown in the example `chopper` runs below. 
+You will need to work out the syntax in order to use one of the alternative trimming approaches.
 
 ```bash
+# remove reads with average quality less than 10
 ./scripts/chopper-linux -q 10 -i 0_data/nanopore_5x.fq > 1_qc/nanopore_5x.fq
 
 ./scripts/chopper-linux -q 10 -i 0_data/nanopore_10x.fq > 1_qc/nanopore_10x.fq
+```
 
-./scripts/chopper-linux -q 10 -i 0_data/pacbio_5x.fq > 1_qc/pacbio_5x.fq
+While we're not actually trimming our PacBio data or progressing it any further in this analysis, we will create symlinks to the raw data files in the `1_qc` directory so that all of our "trimmed" data is in the same place and we can run `seqkit` again.  
 
-./scripts/chopper-linux -q 10 -i 0_data/pacbio_10x.fq > 1_qc/pacbio_10x.fq
+```bash
+ln -s /shared/data/euk_assembly/part1/pacbio_5x.fq 1_qc/pacbio_5x.fq
+ln -s /shared/data/euk_assembly/part1/pacbio_10x.fq 1_qc/pacbio_10x.fq
 ```
 
 Now, run `seqkit` on your trimmed fastq files again to see how much sequencing data (and hence approximate genome coverage) you have remaining. 
+
 
 ```bash
 echo -e "#\n# Trimmed data" >> 1_qc/summary.stats
@@ -172,6 +189,7 @@ seqkit stats 1_qc/nanopore_5x.fq 1_qc/nanopore_10x.fq 1_qc/pacbio_5x.fq 1_qc/pac
 - How have the avg_len and max_len for the Nanopore reads changed? 
 - How much read coverage do you have now in your Nanopore 5x dataset (assuming a 12.5Mbp genome). 
 - Do you think that you have enough data to generate a good quality assembly?
+
 # **4. Assembly**
 
 Now we're ready to assemble our genome. 
@@ -200,12 +218,12 @@ Check that it is working as below. The usage instructions should be printed to t
 flye
 ```
 
-We will be assembling just one of our datasets in class and assemblies generated from the remaining three datasets will be provided. Code is provided for the nanopore_5x dataset. 
+We will be assembling just one of our datasets in class and assemblies generated from the remaining three datasets will be provided. Code is provided for the nanopore_5x dataset but you may assemble your nanopore_10x dataset if you'd prefer. It will take slightly longer but will give us a bit more variety when we compare at the end.  
 
 ```bash
-mkdir -p 2_assemble/nanopore_5x
+mkdir -p 2_assemble/my_nanopore_5x
 
-flye --nano-raw 1_qc/nanopore_5x.fq --out-dir 2_assembly/nanopore_5x --threads 2
+flye --nano-raw 1_qc/nanopore_5x.fq --out-dir 2_assemble/my_nanopore_5x --threads 2
 ```
 
 This will take about 20 minutes to run. 
@@ -241,7 +259,8 @@ Flye will also generate 5 folders, which store output files from the 5 stages of
 - assembly_info.txt: Extra information about contigs.
 - flye.log: Log report showing all running info and summary of final assembly.
 
-❓ What are the names of the subdirectories generated by `flye` and what do you think they might each be for?
+❓ **Another Question!**
+- What are the names of the subdirectories generated by `flye` and what do you think they might each be for?
 
 # **5. Assembly Quality - QUAST**
 
@@ -253,22 +272,23 @@ If we provide a reference genome, each of the assemblies will be compared to thi
 
 Here we will run it without a reference.
 
-Because you have only generated one assembly, I've provided four other assemblies so that you have something to compare with. Place all of these assemblies in a single directory `2_assembly/all` so that they're easy to find. Both of the provided Nanopore assemblies (5x and 10x) were generated from the untrimmed datasets.
+Because you have only generated one assembly, I've provided four other assemblies so that you have something to compare with. Place all of these assemblies in a single directory `2_assembly/all` so that they're easy to find. 
+Both of the provided Nanopore assemblies (5x and 10x) were generated from the untrimmed datasets.
 
 ```bash
-mkdir -p 2_assembly/all
+mkdir -p 2_assemble/all
 
 # copy your assembly to the new dir and rename
-cp 2_assembly/nanopore_5x/assembly.fasta 2_assembly/all/nanopore_5x.fasta
+cp 2_assemble/my_nanopore_5x/assembly.fasta 2_assemble/all/my_nanopore_5x.fasta
 
 # Copy provided assemblies to new dir
-cp /shared/data/euk_assembly/part1/assemblies/* 2_assembly/all/.
+cp /shared/data/euk_assembly/part1/assemblies/* 2_assemble/all/.
 ```
 
 Now we'll run QUAST on all 5 assemblies.
 
 ```bash
-quast -o 3_quast/without_ref -t 2 --labels "nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x" 2_assembly/all/nanopore_5x.fasta 2_assembly/all/nanopore_10x.assembly.fasta 2_assembly/all/pacbio_5x.assembly.fasta 2_assembly/all/pacbio_10x.assembly.fasta
+quast -o 3_quast/without_ref -t 2 --labels "my_nanopore_5x,nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x" 2_assemble/all/my_nanopore_5x.fasta 2_assemble/all/nanopore_5x.fasta 2_assemble/all/nanopore_10x.assembly.fasta 2_assemble/all/pacbio_5x.assembly.fasta 2_assemble/all/pacbio_10x.assembly.fasta
 
 ```
 
@@ -278,7 +298,8 @@ Open the `icarus.html` file located in the `3_quast/without_ref` directory in a 
 
 Click on the QUAST Report link and have a look at the metrics produced by QUAST for each of your assemblies. 
 
-* Based on the N50 and N90 scores, which is the best assembly?
+❓**Question:**
+- Based on the N50 and N90 scores, which is the best assembly?
 
 You've previously learnt about N50 as a measure of assembly contiguity ([refresh your memory here](https://en.wikipedia.org/wiki/N50,_L50,_and_related_statistics#N50)) but N50 on its own only gives us a snapshot into assembly contiguity.
 A better way to look at assembly contiguity is to inspect a cumulative contig length plot.
@@ -325,17 +346,18 @@ Before we run BUSCO, we need to decide which lineage dataset we should use for o
 Compare the taxonomy with the above listed available BUSCO lineage datasets and you'll find that there are three datasets we should be able to use for fission yeast, which are `eukaryota_odb12.2`, `fungi_odb12.2` and `ascomycota_odb12.2` following the taxonomy tree.
 Datasets closer to the branch end of taxonomy will containsingle copy orthologs that are more specific to the target species.
 
-❓Why does the `ascomycota` database have more single-copy orthologs than the `eukaryota` database? 
+❓**Question:**
+- Why does the `ascomycota` database have more single-copy orthologs than the `eukaryota` database? 
 
 Generally speaking, you should choose the lineage dataset closer to the branch end of taxonomy. But in this prac, choosing `ascomycota` will take much longer time to run than choosing `eukaryota` because there are a so many more orthologs. 
 Therefore, we will use `eukaryota`.
 
 **NOTE:** The databases listed by BUSCO are mostly `odb12.2` because that is the most recent version available online. HOwever, our installation includes only `odb10`. Therefore,  make sure that you specify `eukaryota_odb10` when you run BUSCO. 
 
-Let's run BUSCO on your Nanopore 5x assembly. 
+Let's run BUSCO on your Nanopore 5x assembly (or whatever assembly you generated from your Nanopore reads). 
 
 ```bash
-busco -m genome -i 2_assembly/nanopore_5x/assembly.fasta -o 4_busco/nanopore_5x -f -c 2 -l eukaryota_odb10
+busco -m genome -i 2_assemble/nanopore_5x/assembly.fasta -o 4_busco/nanopore_5x -f -c 2 -l eukaryota_odb10
 ```
 
 This will take ~10 mins to finish. 
@@ -359,19 +381,20 @@ These results are also stored in the `short_summary*.txt` file in `4_busco/nanop
 
 Now, we could interpret these results on their own but it's a lot more interesting if we have more than one assembly to compare. 
 
-I have already run BUSCO on each of the provided assemblies. Make a new directory, copy over your assembly results, and then the BUSCO results for the other three assemblies. We put them all in the same directory because the BUSCO `generate_plot.py` script (this is usually installed along with BUSCO) requires it. 
+I have already run BUSCO on each of the provided assemblies. Make a new directory, copy over your assembly results, and then the BUSCO results for the other three assemblies. 
+We put them all in the same directory because the BUSCO `generate_plot.py` script (provided with the BUSCO installation) requires it. 
 
 ```bash
 mkdir -p 4_busco/all 
 
 # copy your busco results to the new dir
-cp 4_busco/nanopore_5x/short_summary*.txt 4_busco/all/.
+cp 4_busco/nanopore_5x/short_summary*.txt 4_busco/all/short_summary.specific.eukaryota_odb10.my_nanopore.txt
 
 # copy provided busco results to new dir
 cp /shared/data/euk_assembly/part1/busco_results/* 4_busco/all/.
 ```
 
-Do a quick check in the `4_busco/all` folder to check that there are four files named like below:
+Do a quick check in the `4_busco/all` folder to check that there are five files named like below:
 
 `short_summary.specific.eukaryota_odb10.xxx.txt`
 
