@@ -288,7 +288,7 @@ cp /shared/data/euk_assembly/part1/assemblies/* 2_assemble/all/.
 Now we'll run QUAST on all 5 assemblies.
 
 ```bash
-quast -o 3_quast/without_ref -t 2 --labels "my_nanopore_5x,nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x" 2_assemble/all/my_nanopore_5x.fasta 2_assemble/all/nanopore_5x.fasta 2_assemble/all/nanopore_10x.assembly.fasta 2_assemble/all/pacbio_5x.assembly.fasta 2_assemble/all/pacbio_10x.assembly.fasta
+quast -o 3_quast/without_ref -t 2 --labels "my_nanopore_5x,nanopore_5x,nanopore_10x,pacbio_5x,pacbio_10x" 2_assemble/all/my_nanopore_5x.fasta 2_assemble/all/nanopore_5x.assembly.fasta 2_assemble/all/nanopore_10x.assembly.fasta 2_assemble/all/pacbio_5x.assembly.fasta 2_assemble/all/pacbio_10x.assembly.fasta
 
 ```
 
