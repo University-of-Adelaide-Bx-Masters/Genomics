@@ -267,8 +267,5 @@ These questions will help you better understand some of the concepts covered in 
 
 - How are haplotype resolved assemblies different from collapsed assemblies? 
 - What do you predict would be the differences between an assembly generated from 40x PacBio HiFi reads and one from 40x Nanopore reads? 
-- If you had 40x of PacBio HiFi data to assemble a large complex eukaryotic genome, what other types of sequencing data and techniques might you use to produce the best quality assembly possible? 
-
-
-
+- You want to generate high-quality primary and alternate assemblies of a complex (over 60% repeats) 1Gbp diploid genome. If you already have 30x of PacBio reads, what other types of sequencing data and techniques could you use to improve the quality of this assembly. 
 
