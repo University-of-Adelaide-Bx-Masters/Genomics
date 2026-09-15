@@ -15,10 +15,13 @@ In this practical we will be assembling a small portion of the New World screwwo
 
 The New World screwworm is a **diploid** with a haploid genome size of ~534Mbp. We will use trio sequencing data to assemble and separate the maternal and paternal haplotypes in their offspring. However, the full genome will take far too long on our VMs so our data has been subset to a ~7Mbp region of chromosome 2. 
 
+If you're interested, the paper associated with the original data is [here](https://academic.oup.com/g3journal/article/16/5/jkag053/8502022). 
+
+
 ## Learning Outcomes
 - Practice data quality control 
 - Learn how to run a simple trio-binning assembly pipeline
-- Understand the differences between different types of phased assemblies
+- Understand the differences between different types of phased assemblies (ie, collapsed, partially phased, haplotype-resolved)
 
 # **2. Setup**
 
@@ -39,9 +42,6 @@ cd euk_assembly_pt2
 Create the directory structure shown below. 
 
 ```bash
- mkdir euk_assembly_pt2
- cd euk_assembly_pt2
- 
  mkdir -p {0_data,1_trim,2_assembly,3_quast}
 ```
 
@@ -65,12 +65,13 @@ You should have 6 files.
 - 20x PacBio HiFi reads from their offspring
 - 1 reference genome
 
-We'll also be using a tool called `yak` that isn't installed in the `bioinf` environment. 
+We'll also be using a tool called `yak` (for k-mer analysis) that isn't installed in the `bioinf` environment. 
 To use it, copy the `yak` directory into your local directory. 
 
 ```bash
 cp -r /shared/data/yak .
 ```
+
 
 # **3. Quality Control**
 
