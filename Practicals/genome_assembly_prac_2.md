@@ -10,7 +10,7 @@
 
 # **1. Introduction/Background**
 
-## 1.1 Eukaryotic Genome Assembly
+## Eukaryotic Genome Assembly
 In this practical we will be assembling a small portion of the New World screwworm - *Cochliomyia hominivorax* . The New World screwworm is a parasitic fly that lays eggs in open wounds or mucous membranes and when they hatch, the larvae burrow into healthy living tissue causing severe pain, tissue destruction, and may be fatal within a week if not treated. 
 
 The New World screwworm is a **diploid** with a haploid genome size of ~534Mbp. We will use trio sequencing data to assemble and separate the maternal and paternal haplotypes in their offspring. However, the full genome will take far too long on our VMs so our data has been subset to a ~7Mbp region of chromosome 2. 
@@ -71,9 +71,10 @@ To use it, copy the `yak` directory into your local directory.
 ```bash
 cp -r /shared/data/yak .
 ```
-# 3. Quality Control
 
-## 3.1 PacBio
+# **3. Quality Control**
+
+## PacBio
 
 Run NanoPlot on your long reads as below and open the `NanoPlot-report.html` file in a web browser.
 
@@ -89,7 +90,7 @@ NanoPlot -t 2 --outdir 1_trim/hifi_30x --fastq 0_data/hifi_20x.fq.gz
 
 We aren't going to trim our PacBio reads today because this data is very high quality but if we did want to, we could use `chopper` like in the previous practical.
 
-## 3.2 Illumina
+## Illumina
 
 Let's run `fastqc` on our Illumina reads to see what we're working with. 
 
@@ -222,10 +223,6 @@ awk '/^S/{print ">"$2;print $3}' hifionly.bp.hap1.p_ctg.gfa > hifionly.hap1.fa
 # get hap2
 awk '/^S/{print ">"$2;print $3}' hifionly.bp.hap2.p_ctg.gfa > hifionly.hap2.fa
 
-
-# and let's also get the primary contigs
-awk '/^S/{print ">"$2;print $3}' hifionly.bp.p_ctg.gfa > hifionly_primaryctgs.fa
-
 cd ..
 ```
 
@@ -254,7 +251,6 @@ When you're ready, try to answer the following:
 - Which haplotype in the hifi assembly is the trio haplotype 1 assembly more similar to?
 - Zoom in to see if there are any regions in the other Hifi haplotype that match with the trio haplotype 1 assembly better. If there are, why might this be?
 
-
 # **Some Final Questions**
 
 These questions will help you better understand some of the concepts covered in the online content that will *probably* help with the upcoming quiz.
@@ -262,5 +258,7 @@ These questions will help you better understand some of the concepts covered in 
 - How are haplotype resolved assemblies different from collapsed assemblies? 
 - What do you predict would be the differences between an assembly generated from 40x PacBio HiFi reads and one from 40x Nanopore reads? 
 - If you had 40x of PacBio HiFi data to assemble a large complex eukaryotic genome, what other types of sequencing data and techniques might you use to produce the best quality assembly possible? 
+
+
 
 
