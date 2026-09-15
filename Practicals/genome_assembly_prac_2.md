@@ -245,6 +245,7 @@ Open the `html` report in `3_quast/ref` in a web browser and open the QUAST repo
 - What about mismatches? What would be considered a mismatch? 
 - Which assembly is the most similar to the reference? 
 - Given that we are comparing assemblies of two separate haplotypes with a single reference sequence, does the higher rate of misassemblies, mismatches and indels in trio haplotype 2 mean that it is of a lower quality than trio haplotype1? Why or why not? 
+- Examine the contig length distribution. Why is the contiguity of an assembly not a measure of assembly accuracy but is important to assembly quality? 
 
 Click the "View in Icarus contig browser" and take some time to explore. 
 When you're ready, try to answer the following:
