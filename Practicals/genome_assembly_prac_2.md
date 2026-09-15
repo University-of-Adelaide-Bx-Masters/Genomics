@@ -54,9 +54,11 @@ euk_assembly_pt2/
 
 ```
 
-Copy all of the trio sequencing data located in `~/data/euk_assembly/part2/`into your `0_data` directory.
+Create symlinks to the trio sequencing data located in `~/data/euk_assembly/part2/`into your `0_data` directory.
 
 ```bash
+ln -s /shared/data/euk_assembly/part2/* 0_data/.
+
 ls -lh 0_data
 ```
 
@@ -65,15 +67,16 @@ You should have 6 files.
 - 20x PacBio HiFi reads from their offspring
 - 1 reference genome
 
-We'll also be using a tool called `yak` (for k-mer analysis) that isn't installed in the `bioinf` environment. 
+We'll also be using a tool called `yak` (Yet Another K-mer analyser) that isn't installed in the `bioinf` environment. 
 To use it, copy the `yak` directory into your local directory. 
 
 ```bash
 cp -r /shared/data/yak .
 ```
 
-
 # **3. Quality Control**
+
+Once again, QC is the first step in our analysis. Even if we don't end up trimming or filtering our dataset, we still need to make sure that the sequencing data we paid for is of sufficient quality and volume for our purposes. 
 
 ## PacBio
 
@@ -98,10 +101,12 @@ Let's run `fastqc` on our Illumina reads to see what we're working with.
 ```bash
 mkdir -p 0_data/fastqc/
 
-fastqc 0_data/*.fq.gz -o 0_data/fastqc/ -t 2
+fastqc 0_data/mother*.fq.gz -o 0_data/fastqc/ -t 2
+
+fastqc 0_data/father*.fq.gz -o 0_data/fastqc/ -t 2
 ```
 
-Focusing on just the fastqc report for the "mother" reads, answer the following questions:
+Focusing on just the fastqc report for the "mother" reads, answer the following questions. Note that in a real-world scenario, we always check all of the reports but because practical time is limited, the data is quite similar and so we're saving a bit of time. 
 
 ❓**Questions:**
 - What is the length of these reads? What does this tell you?
@@ -127,6 +132,7 @@ mkdir -p 1_trim/fastqc/
 ## fastqc trimmed reads
 fastqc 1_trim/*.fq.gz -o 1_trim/fastqc/ -t 2
 ```
+
 
 # **4. Assembly with Hifiasm**
 
@@ -160,6 +166,8 @@ In the meantime, discuss the following questions:
 ❓**Questions:**
 - The Introduction in the Hifiasm github states "Hifiasm produces arguably the best single-sample telomere-to-telomere assemblies combing HiFi, ultralong and Hi-C reads". What properties do these data types have and how might they be used to generate such a high quality assembly?
 - We are assembling a 7Mbp section of the New World Screwworm genome. Would it be appropriate to run BUSCO on our assembly?
+- What is a primary and alternate assembly?
+- Go to the [hifiasm github](https://github.com/chhylp123/hifiasm). We are assembling both haplotypes using our trio data but try to find out how we would produce a primary and alternate assembly from just our PacBio HiFi data.  
 
 ## Assembly without trio data
 
