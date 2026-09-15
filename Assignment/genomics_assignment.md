@@ -140,7 +140,7 @@ Your final submission **must** include:
 	- **b.** Identify all SV events and their associated breakpoints. Show the steps and reasonings for your answers. Include diagrams if you think it helps. If you want to use hand-drawn diagram, just take and submit a photo of your drawing, but make sure it's clearly legible.
 
 
-## Section 4: Eukaryotic genome assembly - **35 marks**
+## Section 4: Eukaryotic genome assembly - **30 marks**
 
 In this part, you aim is to de novo assemble one of the SMALLEST eukaryotic genomes, Encephalitozoon intestinalis. E. intestinalis belongs to Microsporidia, and it's a parasite (microbial fungi), which causes microsporidiosis (an oppotunistic intestinal infection that causes diarrhea and wasting in immunocompromised individuals, such as HIV). If you want to understand more about E. intestinalis, please hava a read at [wikipedia](https://en.wikipedia.org/wiki/Encephalitozoon_intestinalis). 
 
@@ -148,11 +148,10 @@ Although the genome of E. intestinalis is very small (~2.5 Mb), it has 11 chroms
 
 ### Data
 
-You are provided with 8 fastq files containing sequencing reads using different sequencing platforms. These fastq files can be found in `~/data/assignment2/raw_data` folder and are described in the table below:
+You are provided with 6 fastq files containing sequencing reads using different sequencing platforms. These fastq files can be found in `~/data/assignment2/raw_data` folder and are described in the table below:
 
 | File(s)                                    | Platform | Coverage | Description                                            |
 |--------------------------------------------|----------|----------|--------------------------------------------------------|
-| illumina_SR_30x_1.fq, illumina_SR_30x_2.fq | Illumina | ~30x     | Paried-end short reads from Illumina Miniseq           |
 | nanopore_LR_15x.fq                         | Nanopore | ~15x     | Long reads from Nanopore MinION                        |
 | nanopore_LR_15x_filt.fq                    | Nanopore | ~15x     | Long reads (reads >= 10 kb) from Nanopore MinION       |
 | nanopore_LR_30x.fq                         | Nanopore | ~30x     | Long reads from Nanopore MinION                        |
@@ -162,57 +161,53 @@ You are provided with 8 fastq files containing sequencing reads using different 
 
 The original dataset can be found [here](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=594722).
 
-The illumina dataset will be used to do genome survey analysis (genome size estimation), and then you will be generating an assembly from each of six long reads datasets using Flye (v2.8.1) and then comparing the quality of these assemblies.
+You will be generating an assembly from each of six long reads datasets using Flye (v2.8.1) and then comparing the quality of these assemblies.
 
 You are also provided with the E. intestinalis reference (taken from [here](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_024399295.1/) if you want to have a look). 
 
 It is in the `~/data/assignment2/DB` directory and is called `GCA_024399295.1_ASM2439929v1_genomic.fna`. 
 
-In addition to the sequencing files, you will be also given two scripts which will be used to do sequence/genome statistics and genome survey analysis. These two scripts can be found in folder `~/data/assignment2/bin`, and are:
 
-| Script       | Description                                 | Link                                               |
-|----------------|---------------------------------------------|----------------------------------------------------|
-| assembly-stats | A light tool to do basic genome statistics  | https://github.com/sanger-pathogens/assembly-stats |
-| genomescope.R  | A R script to do genome survey analysis     | https://github.com/schatzlab/genomescope           |
-
+Your submission should include a bash script named `axxxxxxx_part4.sh` that includes the code associated with each of the following questions:
+- Q4.1
+- Q4.3
+- Q4.4
+- Q4.5
+- Q4.8
 
 ### Questions
 
-**4.1** Run `assembly-stats` on each LR (Long Reads) dataset and find out the following info for each dataset:
-
-* total number of bases **[1 mark]**
-* number of reads **[1 mark]**
-* average read length **[1 mark]**
-* largest read length **[1 mark]**
-
-**4.2** Predict which datasets will produce the best and worst assemblies. 
-Don't worry if your predictions don't match up with your results later. 
-Just try to justify your predictions based on the information you've collected and your current knowledge. **[2 marks]**
-
-**4.3** Use `jellyfish` and `genomescope.R` to perform genome survey analysis. What is the estimated genome size? Provide the generated figure showing the fitted model for k-mer distribution in your report (Hint: plot.png in your genomescope output folder) **[4 marks]**
+**4.1** Run `NanoPlot` on all of the long-read datasets. 
+Report the following information for each dataset **[1 mark for code, 2 for results]**
+* total number of bases
+* number of reads
+* average read length
+* largest read length
 
 
-**4.4** Write a bash script to assemble all 6 LR datasets using Flye. (Hint: Assembly all 6 LR datasets will take ~50 mins in total, so be patient if you see the Flye is running for a while.) Provide this bash script, named axxxxxxx_part4.sh, as part of your submission. **[5 marks]**
+**4.2** Based on the information in the question above, predict which of the 6 datasets will produce the best and worst assemblies.
+Don't worry if your predictions are incorrect, just try to justify your position based on the information you've collected and your current knowledge of these sequencing technologies. **[3 marks]**
 
-**4.5** Run `assembly-stats` on each assembled genome and find out the following info for the assembled genomes:
+**4.3** Write a bash script to assemble all 6 LR datasets using Flye. (Hint: Assembly all 6 LR datasets will take ~50 mins in total, so be patient if you see Flye is running for a while.) **[5 marks for code]**
 
-* draft genome size **[1 mark]**
-* number of contigs **[1 mark]**
-* largest contig length **[1 mark]**
-* N50 **[1 mark]**
+**4.4** Run `seqkit` on each assembled genome and find out the following info for the assembled genomes. We used `seqkit` in the practicals to assess FASTQ files but it also works with FASTA files. **[1 mark for code, 2 marks for results]** 
 
-**4.6** Compare these assemblies with each other using QUAST and provide the report (Hint: report.pdf in your QUAST output folder). This may be uploaded separately to the pdf containing your answers to other questions. **[2 marks]**
+* total genome size
+* number of contigs
+* largest contig length
+* N50
 
-**4.7** Comment on the contig length distribution. Is this what you expected? **[2 marks]**
+**4.5** Compare these assemblies with each other using QUAST without a reference genome and provide the report (Hint: report.pdf in your QUAST output folder). This may be uploaded separately to the pdf containing your answers to other questions. **[1 mark for code, 1 mark for report]**
 
-**4.8** Explain why contiguity isn't a good measure of assembly accuracy but is still relevant to the overall assessment of assembly quality. **[2 marks]**
+**4.6** Comment on the contig length distribution in the QUAST report. Is this what you expected and why? **[2 marks]**
 
+**4.7** Explain why contiguity isn't a good measure of assembly accuracy but is still relevant to the overall assessment of assembly quality. **[2 marks]**
 
-**4.9** Run BUSCO on your 6 assemblies using an appropriate lineage and create a comparison image using the `generate_plot.py` script. Note that this script will only work when the `BUSCO` conda environment is activated. Provide this image as a figure in your report (Hint: the "busco_figure.png" file in short summaries folder). **[4 marks]**
+**4.8** Run BUSCO on your 6 assemblies using the `microsporidia_odb10` database and create a comparison image using the `generate_plot.py` script. 
+Note that this script will only work when the `BUSCO` conda environment is activated. Provide this image as a figure in your report (Hint: the "busco_figure.png" file in short summaries folder). **[3 marks for code, 1 for figure]**
 
-**4.10** Comment on the BUSCO results. Which assembly appears to be the best and which is the worst? **[2 marks]**
+**4.9** Comment on the BUSCO results. Which assembly appears to be the best and which is the worst? **[2 marks]**
 
-
-**4.11** Considering your findings so far, justify which assembly you think is the best and which is the worst.
-If your findings don't match your predictions from Part 1, try to explain why this might be. **[4 marks]**
+**4.10** Considering your findings so far, justify which assembly you think is the best and which is the worst.
+If your findings don't match your predictions, try to explain why this might be. **[4 marks]**
 
