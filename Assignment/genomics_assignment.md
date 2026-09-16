@@ -12,6 +12,8 @@ Your submission should include:
 
 ## Section 1 - [**5 marks**]
 
+Please answer the following questions relating to **the first two** clinical genomics practicals: 
+
 1. List 5 annotations commonly added to a vcf that could be used to help filter down variants to a handful of diagnostic variants. Give a brief explanation of how each could help. **[2 marks]**  
 
 2. You are helping a medical scientist find the disease-causing variant for a patient of Indigenous Australian descent. You find a variant in a candidate gene that matches the clinical phenotype, and look at its annotations to find its Gnomad frequency is 0.6%. What can the frequency of this variant tell you about the pathogenicity of the variant? **[1 mark]**
@@ -24,59 +26,16 @@ Your submission should include:
 
 4. What is a de novo mutation? **[1 mark]** 
 
-5. What are the three hallmarks of a cnv event? Use either a deletion or duplication event as your example. **[1.5 marks]**
-
-
-6. Is it possible to have an autosomal dominant homozygous mutation? Explain how. If you want to choose a few routine filters, would you set your variant curation software to filter by autosomal dominant homozygous mutation, or by autosomal dominant heterozygous? **[2.5 marks]**
-
-
-7. You annotate 3 variants according to their Ensembl sequence ontology and want to perform some filtering based on effect on transcript. You find one is a “start retained” variant, one is “stop lost”, and the other is an “inframe deletion”. If you set your filtering to only keep variants with impact marked HIGH, which of them would be kept? **[1 mark]**
-
-8. Refer to question 7 - based on effect on gene function, give the reasoning why you think each impact rating was attributed to each of the 3 ontology terms here. **[1.5 marks]**
-
-
-9. When determing QC thresholds for determining if a sample should pass or fail, why is %bp covered at {threshold}X a better method than just overall mean depth? **[1 mark]**
-
-10. Sex check, contamination check, and sample integrity are 3 important QC for each sample. Briefly describe how they can be done. **[1.5 marks]**
-
-11. Why is validation and reproducibility so important in clinical pipelines? **[1 mark]**
-
 
 ## Section 2 - [**5 marks**]
 
 Please answer the following questions relating to the population genomics content: 
 
-1. What command would you use to get the total number of variants from a VCF called file.vcf.gz? And then only for the region 10,000,000-30,000,000 from chromosome 3? **[2 marks]**
+**2.1.** What command would you use to get the total number of variants from a VCF called file.vcf.gz? And then only for the region 10,000,000-30,000,000 from chromosome 3? **[2 marks]**
 
-2. What information would the command bcftools query -l file.vcf.gz give you? (Look at the bcftools documentation for a complete list of options) **[1 mark]**
+**2.2.**  What information would the command bcftools query -l file.vcf.gz give you? (Look at the bcftools documentation for a complete list of options) **[1 mark]**
 
-3. If a VCF file has GT:GQ:DP:GL in the FORMAT field for a particular variant, what kind of information about the samples is recorded? **[2 marks]**
-
-4. Which of the following programs can convert a VCF file into data formats compatible with population genomics analyses? **[2 marks]**
-	- a. PLINK
-	- b. ADMIXTOOLS
-	- c. CONVERTF
-	- d. SMARTPCA
-
-5. What was the extension of the three output files when you converted a VCF file using PLINK? Describe briefly what information is recorded in each file. **[3 marks]**
-
-6. When using PLINK, what would the option --maf 0.10 do? (Look at the PLINK documentation for a complete list of options... and use the search box!) **[2 marks]**
-
-7. The three EIGENSTRAT output files generated when converting VCF files with CONVERTF contain information about the genotypes, variants, and samples. How is the genotype information coded? Briefly describe each code key (4 in total). **[2 marks]**
-
-8. Data missingness is characteristic of ancient DNA datasets and could lead to biases when building a PCA. If you use SMARTPCA on a dataset that includes both contemporary (no missing data) and ancient genotypes (missing data), what options can you use to avoid biases due to missing data? **[2 marks]**
-
-9. When using population genomics data, PCA (select the correct answer): **[1 mark]**
-	- a. is a formal test of shared ancestry between populations
-	- b. should only be used as an exploratory tool to visualise genetic diversity and formulate hypotheses about population ancestry
-	- c. a and b are correct
-	- d. a and b are wrong
-
-10. F and D statistics allow us to test hypotheses about populations ancestry: **[1 mark]**
-	- a. True
-	- b. False
-
-11. You performed a F4 or a D statistic and the result is not significantly different from 0. What does it mean in terms of genetic admixture? **[2 marks]**
+**2.3.**  If a VCF file has GT:GQ:DP:GL in the FORMAT field for a particular variant, what kind of information about the samples is recorded? **[2 marks]**
 
 
 ## Section 3 - **[20 marks]**
