@@ -77,7 +77,7 @@ Your submission should include:
 11. You performed a F4 or a D statistic and the result is not significantly different from 0. What does it mean in terms of genetic admixture? **[2 marks]**
 
 
-## Section 3: Structural Variation - **20 marks**
+## Section 3: Structural Variation - **[20 marks]**
 
 Data for this part is located in the `/data/assignment3/` directory
 
@@ -137,7 +137,7 @@ Your final submission **must** include:
 	- **b.** Identify all SV events and their associated breakpoints. Show the steps and reasonings for your answers. Include diagrams if you think it helps. If you want to use hand-drawn diagram, just take and submit a photo of your drawing, but make sure it's clearly legible.
 
 
-## Section 4: Eukaryotic genome assembly - **30 marks**
+## Section 4: Eukaryotic genome assembly - [**30 marks**]
 
 In this part, you aim is to de novo assemble one of the SMALLEST eukaryotic genomes, Encephalitozoon intestinalis. E. intestinalis belongs to Microsporidia, and it's a parasite (microbial fungi), which causes microsporidiosis (an oppotunistic intestinal infection that causes diarrhea and wasting in immunocompromised individuals, such as HIV). If you want to understand more about E. intestinalis, please hava a read at [wikipedia](https://en.wikipedia.org/wiki/Encephalitozoon_intestinalis). 
 
