@@ -1,4 +1,4 @@
-# **Genomics Assignment**
+# **Practical Assignment 2 - Genomics**
 
 
 ### **All questions must be answered in terms of the content covered during practicals and in other course materials provided unless noted otherwise. You must use tools and approaches covered during the practicals for all analysis. All analysis must be performed on your allocated VM in a directory named `~/Genomics`.**
