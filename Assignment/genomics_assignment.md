@@ -14,17 +14,17 @@ Your submission should include:
 
 Please answer the following questions relating to **the first two** clinical genomics practicals: 
 
-1. List 5 annotations commonly added to a vcf that could be used to help filter down variants to a handful of diagnostic variants. Give a brief explanation of how each could help. **[2 marks]**  
+**1.1.**  List 5 annotations commonly added to a vcf that could be used to help filter down variants to a handful of diagnostic variants. Give a brief explanation of how each could help. **[2 marks]**  
 
-2. You are helping a medical scientist find the disease-causing variant for a patient of Indigenous Australian descent. You find a variant in a candidate gene that matches the clinical phenotype, and look at its annotations to find its Gnomad frequency is 0.6%. What can the frequency of this variant tell you about the pathogenicity of the variant? **[1 mark]**
+**1.2.** You are helping a medical scientist find the disease-causing variant for a patient of Indigenous Australian descent. You find a variant in a candidate gene that matches the clinical phenotype, and look at its annotations to find its Gnomad frequency is 0.6%. What can the frequency of this variant tell you about the pathogenicity of the variant? **[1 mark]**
 
-3. Referring to the case in question 2, you partner with ANU’s National Centre for Indigenous Genomics researchers (NCIG), who provide some more information on the variant in the disease-causing gene. They give you access to a database of 50,000 Indigenous individuals, and you count up the frequency of this variant and find it is now at a frequency of 8% in this new dataset. What can you infer from this? Choose one answer only. **[1 mark]**
-	- a. Gnomad database has many more participants than 50,000, therefore the frequency is lower in Gnomad database than NCIG. 
-	- b. Gnomad database does not have good representation of the Australian indigenous populations, hence the low frequency. Given this variant’s high frequency in the NCIG data, there is a good chance the variant belongs to benign private variation, rather than is pathogenic.
-	- c. Regardless of its % in the NCIG database, the variant should be recommended to be classed as possibly pathogenic because it is <1% in Gnomad, since Gnomad is the gold standard resource. 
-	- d. It is not possible to infer anything from this, since 50,000 is not a big enough sample size to calculate population frequency. 
+**1.3.** Referring to the case in question 2, you partner with ANU’s National Centre for Indigenous Genomics researchers (NCIG), who provide some more information on the variant in the disease-causing gene. They give you access to a database of 50,000 Indigenous individuals, and you count up the frequency of this variant and find it is now at a frequency of 8% in this new dataset. What can you infer from this? Choose one answer only. **[1 mark]**
+	   - a. Gnomad database has many more participants than 50,000, therefore the frequency is lower in Gnomad database than NCIG. 
+	   - b. Gnomad database does not have good representation of the Australian indigenous populations, hence the low frequency. Given this variant’s high frequency in the NCIG data, there is a good chance the variant belongs to benign private variation, rather than is pathogenic.
+	   - c. Regardless of its % in the NCIG database, the variant should be recommended to be classed as possibly pathogenic because it is <1% in Gnomad, since Gnomad is the gold standard resource. 
+	   - d. It is not possible to infer anything from this, since 50,000 is not a big enough sample size to calculate population frequency. 
 
-4. What is a de novo mutation? **[1 mark]** 
+**1.4.** What is a de novo mutation? **[1 mark]** 
 
 
 ## Section 2 - [**5 marks**]
